@@ -1,0 +1,62 @@
+# Movie List Project Setup Rules
+
+## Node Environment
+
+This project uses Node.js v25.0.0 managed with nvm.
+
+**Important:** Always run `nvm use` at the start of any terminal session to ensure the correct Node version is active.
+
+```bash
+nvm use
+```
+
+The project has an `.nvmrc` file that specifies the Node version.
+
+## Package Manager
+
+This project uses **pnpm** as the package manager.
+
+- Installing dependencies: `pnpm install`
+- Adding dependencies: `pnpm add <package>`
+- Adding dev dependencies: `pnpm add -D <package>`
+- Running scripts: `pnpm dev`, `pnpm build`, etc.
+
+## Development Workflow
+
+1. Ensure Node environment is active: `nvm use`
+2. Install dependencies: `pnpm install`
+3. Set up environment variables: Copy `.env.example` to `.env` and configure
+4. Run Prisma migrations: `pnpm prisma migrate dev`
+5. Start development server: `pnpm dev`
+
+## Database
+
+- Database: PostgreSQL (via Docker)
+- ORM: Prisma
+- Migrations: `pnpm prisma migrate dev`
+- Studio: `pnpm prisma studio`
+- Generate client: `pnpm prisma generate`
+
+## Project Structure
+
+- `src/` - Nuxt source code
+  - `pages/` - Route pages
+  - `components/` - Vue components
+  - `composables/` - Composable functions
+  - `layouts/` - Application layouts
+  - `middleware/` - Route middleware
+  - `plugins/` - Nuxt plugins
+  - `assets/` - Static assets (CSS, images)
+- `server/` - Server-side code
+  - `api/` - API endpoints
+  - `utils/` - Server utilities
+- `prisma/` - Database schema and migrations
+
+## Key Technologies
+
+- **Frontend**: Nuxt 3, Vue 3, Tailwind CSS
+- **State Management**: @tanstack/vue-query
+- **Backend**: Nuxt server routes, Prisma
+- **Database**: PostgreSQL
+- **Authentication**: JWT with HTTP-only cookies
+- **Password Hashing**: bcryptjs
