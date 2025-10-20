@@ -1,10 +1,52 @@
+# Dependencies
 node_modules
-.nuxt
+npm-debug.log
+pnpm-debug.log
+yarn-error.log
+
+# Build outputs
 .output
+.nuxt
 dist
-.git
+build
+
+# Environment files
 .env
-*.log
+.env.local
+.env.*.local
+
+# Git
+.git
+.gitignore
+.github
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS files
 .DS_Store
+Thumbs.db
 
+# Logs
+logs
+*.log
 
+# Testing
+coverage
+.nyc_output
+
+# Misc
+*.md
+!README.md
+.prettierrc
+.prettierignore
+.editorconfig
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore

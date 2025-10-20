@@ -114,11 +114,11 @@ A collaborative web application for couples to manage a shared watch list of mov
 
 ```typescript
 {
-  id: string(UUID);
-  username: string(unique);
-  passwordHash: string;
-  displayName: string;
-  createdAt: DateTime;
+  id: string(UUID)
+  username: string(unique)
+  passwordHash: string
+  displayName: string
+  createdAt: DateTime
 }
 ```
 
@@ -147,13 +147,13 @@ A collaborative web application for couples to manage a shared watch list of mov
 
 ```typescript
 {
-  id: string(UUID);
-  contentId: string;
-  status: "WANT_TO_WATCH" | "WATCHING" | "WATCHED" | "ON_HOLD" | "DROPPED";
-  priority: "LOW" | "MEDIUM" | "HIGH";
-  lastUpdatedBy: User;
-  lastUpdatedById: string;
-  updatedAt: DateTime;
+  id: string(UUID)
+  contentId: string
+  status: 'WANT_TO_WATCH' | 'WATCHING' | 'WATCHED' | 'ON_HOLD' | 'DROPPED'
+  priority: 'LOW' | 'MEDIUM' | 'HIGH'
+  lastUpdatedBy: User
+  lastUpdatedById: string
+  updatedAt: DateTime
 }
 ```
 
@@ -161,12 +161,12 @@ A collaborative web application for couples to manage a shared watch list of mov
 
 ```typescript
 {
-  id: string(UUID);
-  contentId: string;
-  userId: string;
-  user: User;
-  text: string;
-  createdAt: DateTime;
+  id: string(UUID)
+  contentId: string
+  userId: string
+  user: User
+  text: string
+  createdAt: DateTime
 }
 ```
 
@@ -174,13 +174,13 @@ A collaborative web application for couples to manage a shared watch list of mov
 
 ```typescript
 {
-  id: string(UUID);
-  contentId: string;
-  content: Content;
-  position: number; // Order in queue (0-based)
-  addedBy: User;
-  addedById: string;
-  createdAt: DateTime;
+  id: string(UUID)
+  contentId: string
+  content: Content
+  position: number // Order in queue (0-based)
+  addedBy: User
+  addedById: string
+  createdAt: DateTime
 }
 ```
 

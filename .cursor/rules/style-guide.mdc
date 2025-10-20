@@ -1,0 +1,164 @@
+# Code Style Guide
+
+This document defines the coding style and conventions for this project.
+
+## 1. Code Formatting
+
+This project uses Prettier with the following configuration:
+
+```json
+{
+  "semi": false,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "trailingComma": "es5",
+  "printWidth": 80,
+  "arrowParens": "avoid"
+}
+```
+
+## 2. TypeScript Conventions
+
+### Return Types
+
+**Prefer type inference** - Omit explicit return types and let TypeScript infer them.
+
+**✅ Good:**
+
+```typescript
+export async function hashPassword(password: string) {
+  const salt = await bcrypt.genSalt(10)
+  return bcrypt.hash(password, salt)
+}
+```
+
+**❌ Avoid:**
+
+```typescript
+export async function hashPassword(password: string): Promise<string> {
+  const salt = await bcrypt.genSalt(10)
+  return bcrypt.hash(password, salt)
+}
+```
+
+### Parameter Types
+
+Always explicitly type function parameters.
+
+### Variable Types
+
+**Avoid explicit type annotations** - Prefer type inference over explicit annotations.
+
+**Order of preference:**
+
+1. **Type inference** (preferred) - Let TypeScript infer the type
+2. **`satisfies`** - When you need to validate the type matches
+3. **Type assertion (`as`)** - When TypeScript can't infer correctly
+4. **Explicit annotation** - Only as last resort
+
+**✅ Good:**
+
+```typescript
+// 1. Prefer inference
+const user = { name: 'Alice', age: 30 }
+const count = 5
+const items = ['a', 'b', 'c']
+
+// 2. Use satisfies to validate type
+const config = {
+  apiUrl: 'https://api.example.com',
+  timeout: 5000,
+} satisfies AppConfig
+
+// 3. Use assertion when necessary
+const data = JSON.parse(response) as User
+
+// 4. Explicit annotation only when needed
+let result: string | null = null
+```
+
+**❌ Avoid:**
+
+```typescript
+// Unnecessary explicit annotations
+const user: User = { name: 'Alice', age: 30 }
+const count: number = 5
+const items: string[] = ['a', 'b', 'c']
+```
+
+### Const Assertions
+
+**Use `as const` wherever possible** - For literal values, arrays, and objects that shouldn't be modified.
+
+**✅ Good:**
+
+```typescript
+// Literal values
+const STATUS = 'active' as const
+const MAX_RETRIES = 3 as const
+
+// Arrays - creates readonly tuple types
+const COLORS = ['red', 'green', 'blue'] as const
+const DIRECTIONS = ['north', 'south', 'east', 'west'] as const
+
+// Objects - makes all properties readonly and literal
+const CONFIG = {
+  apiUrl: 'https://api.example.com',
+  timeout: 5000,
+  retries: 3,
+} as const
+
+// Enum-like objects
+const STATUS_CODES = {
+  OK: 200,
+  NOT_FOUND: 404,
+  SERVER_ERROR: 500,
+} as const
+```
+
+**❌ Avoid:**
+
+```typescript
+// Missing as const - types are too wide
+const COLORS = ['red', 'green', 'blue'] // type: string[]
+const CONFIG = {
+  apiUrl: 'https://api.example.com',
+  timeout: 5000,
+} // type: { apiUrl: string, timeout: number }
+```
+
+## 3. React Components (If Used)
+
+### Props Definition
+
+Use inline destructuring with TypeScript types for component props:
+
+**✅ Good:**
+
+```typescript
+function Component({ someProp }: { someProp: string }) {
+  return <div>{someProp}</div>
+}
+```
+
+For components with multiple props:
+
+```typescript
+function UserCard({
+  name,
+  age,
+  email
+}: {
+  name: string
+  age: number
+  email: string
+}) {
+  return (
+    <div>
+      <h2>{name}</h2>
+      <p>{age} years old</p>
+      <p>{email}</p>
+    </div>
+  )
+}
+```

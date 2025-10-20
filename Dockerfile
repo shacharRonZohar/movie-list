@@ -1,5 +1,6 @@
-FROM node:20-alpine
-
+# Stage 1: Dependencies
+FROM node:20-alpine AS deps
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Install pnpm
@@ -7,23 +8,62 @@ RUN npm install -g pnpm@9.15.4
 
 # Copy package files
 COPY package.json pnpm-lock.yaml ./
+COPY prisma ./prisma/
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
-# Copy prisma schema
-COPY prisma ./prisma/
-
 # Generate Prisma Client
-RUN npx prisma generate
+RUN pnpm prisma generate
 
-# Copy application files
+# Stage 2: Builder
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+# Install pnpm
+RUN npm install -g pnpm@9.15.4
+
+# Copy dependencies from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/prisma ./prisma
+
+# Copy application code
 COPY . .
+
+# Build the application
+RUN pnpm run build
+
+# Stage 3: Runner (Production)
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+# Install pnpm for running the app
+RUN npm install -g pnpm@9.15.4
+
+# Set environment to production
+ENV NODE_ENV=production
+
+# Create a non-root user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nuxtjs
+
+# Copy necessary files from builder
+COPY --from=builder --chown=nuxtjs:nodejs /app/.output ./.output
+COPY --from=builder --chown=nuxtjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nuxtjs:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nuxtjs:nodejs /app/package.json ./package.json
+
+# Switch to non-root user
+USER nuxtjs
 
 # Expose port
 EXPOSE 3000
 
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+
 # Start the application
-CMD ["pnpm", "run", "dev"]
+CMD ["node", ".output/server/index.mjs"]
 
 

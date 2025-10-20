@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: movielist-db-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: movielist
+      POSTGRES_PASSWORD: movielist_password
+      POSTGRES_DB: movielist
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+    networks:
+      - movielist-network-dev
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U movielist']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: movielist-app-dev
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      - DATABASE_URL=postgresql://movielist:movielist_password@db:5432/movielist
+      - JWT_SECRET=dev-jwt-secret-change-me
+      - NODE_ENV=development
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.nuxt
+      - /app/.output
+    networks:
+      - movielist-network-dev
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "pnpm prisma generate && pnpm prisma migrate deploy && pnpm dev"
+
+volumes:
+  postgres_data_dev:
+    driver: local
+
+networks:
+  movielist-network-dev:
+    driver: bridge
