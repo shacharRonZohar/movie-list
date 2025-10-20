@@ -34,7 +34,6 @@ model User {
 model Content {
   id            String   @id @default(uuid())
   title         String
-  description   String
   status        Status   @default(WANT_TO_WATCH)
   createdAt     DateTime @default(now()) @map("created_at")
   createdBy     User     @relation("CreatedBy", fields: [createdById], references: [id])

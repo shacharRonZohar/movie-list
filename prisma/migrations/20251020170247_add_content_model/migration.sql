@@ -5,7 +5,6 @@ CREATE TYPE "Status" AS ENUM ('WANT_TO_WATCH', 'WATCHING', 'WATCHED', 'ON_HOLD',
 CREATE TABLE "content" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
     "status" "Status" NOT NULL DEFAULT 'WANT_TO_WATCH',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "created_by_id" TEXT NOT NULL,

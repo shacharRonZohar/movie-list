@@ -10,7 +10,6 @@ export interface KeyboardShortcut {
   alt?: boolean
   meta?: boolean
   handler: (event: KeyboardEvent) => void
-  description?: string
 }
 
 /**

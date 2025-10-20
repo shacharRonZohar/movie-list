@@ -21,7 +21,6 @@ A collaborative web application for couples to manage a shared watch list of mov
   - Type (Movie/Series)
   - Genre(s)
   - Release year
-  - Description/Synopsis
   - Poster image URL
   - IMDb/TMDB rating (optional)
   - Runtime/Episode count
@@ -131,7 +130,6 @@ A collaborative web application for couples to manage a shared watch list of mov
   type: 'MOVIE' | 'SERIES'
   genres: string[]
   year: number
-  description: string
   posterUrl: string (optional)
   rating: number (optional)
   runtime: number (optional, in minutes)
