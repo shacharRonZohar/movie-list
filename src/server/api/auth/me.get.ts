@@ -1,17 +1,13 @@
 import { prisma } from '../../utils/prisma'
-import { getUserFromToken } from '../../utils/auth'
+import { defineProtectedEventHandler } from '../../utils/defineProtectedEventHandler'
 
-export default defineEventHandler(async event => {
+/**
+ * Get current authenticated user
+ * Returns full user data from the database based on JWT token
+ */
+export default defineProtectedEventHandler(async event => {
   try {
-    // Get user from JWT token in cookie
-    const tokenPayload = getUserFromToken(event)
-
-    if (!tokenPayload) {
-      throw createError({
-        statusCode: 401,
-        statusMessage: 'Not authenticated',
-      })
-    }
+    const tokenPayload = event.context.user!
 
     // Fetch full user data from database
     const user = await prisma.user.findUnique({
@@ -34,9 +30,9 @@ export default defineEventHandler(async event => {
     return {
       user,
     }
-  } catch (error: any) {
+  } catch (error) {
     // If it's already an H3Error, rethrow it
-    if (error.statusCode) {
+    if (error && typeof error === 'object' && 'statusCode' in error) {
       throw error
     }
 

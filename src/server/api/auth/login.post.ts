@@ -1,9 +1,17 @@
 import { prisma } from '../../utils/prisma'
 import { verifyPassword, generateToken, setAuthCookie } from '../../utils/auth'
 import { sanitizeString } from '../../utils/validation'
+import { requireRateLimit } from '../../utils/rateLimit'
 
+/**
+ * Login endpoint
+ * Authenticates user with username and password, returns JWT token in HTTP-only cookie
+ * Rate limited to prevent brute force attacks
+ */
 export default defineEventHandler(async event => {
   try {
+    // Rate limit: 5 login attempts per minute per IP
+    requireRateLimit(event, { windowMs: 60000, maxRequests: 5 })
     // Parse request body
     const body = await readBody(event)
     const { username, password } = body
@@ -59,9 +67,9 @@ export default defineEventHandler(async event => {
         createdAt: user.createdAt,
       },
     }
-  } catch (error: any) {
+  } catch (error) {
     // If it's already an H3Error, rethrow it
-    if (error.statusCode) {
+    if (error && typeof error === 'object' && 'statusCode' in error) {
       throw error
     }
 

@@ -30,17 +30,17 @@ const sizeClasses = {
   sm: 'h-4 w-4 border-2',
   md: 'h-8 w-8 border-2',
   lg: 'h-12 w-12 border-3',
-}
+} as const
 
 const colorClasses = {
   primary: 'border-brand-primary',
   white: 'border-white',
   gray: 'border-gray-600',
-}
+} as const
 
 const textSizeClasses = {
   sm: 'text-sm',
   md: 'text-base',
   lg: 'text-lg',
-}
+} as const
 </script>

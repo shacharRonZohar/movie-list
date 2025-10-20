@@ -15,11 +15,22 @@ const handleLogin = () => {
   login(credentials)
 }
 
-const getErrorMessage = (error: any): string => {
-  if (error?.statusCode === 401) {
+const getErrorMessage = (error: unknown) => {
+  if (
+    error &&
+    typeof error === 'object' &&
+    'statusCode' in error &&
+    error.statusCode === 401
+  ) {
     return 'Invalid username or password'
   }
-  return error?.message || 'An error occurred during login. Please try again.'
+  if (error && typeof error === 'object' && 'message' in error) {
+    return (
+      (error.message as string) ||
+      'An error occurred during login. Please try again.'
+    )
+  }
+  return 'An error occurred during login. Please try again.'
 }
 </script>
 

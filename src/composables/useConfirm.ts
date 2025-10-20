@@ -1,5 +1,8 @@
 import { ref } from 'vue'
 
+/**
+ * Confirmation dialog options
+ */
 export interface ConfirmOptions {
   title: string
   message: string
@@ -25,9 +28,15 @@ const confirmState = ref<ConfirmState>({
   resolve: null,
 })
 
+/**
+ * Confirmation dialog composable
+ * Provides a promise-based confirmation dialog for user actions
+ *
+ * @returns Confirmation state and methods
+ */
 export const useConfirm = () => {
-  const confirm = (options: ConfirmOptions): Promise<boolean> => {
-    return new Promise(resolve => {
+  const confirm = (options: ConfirmOptions) => {
+    return new Promise<boolean>(resolve => {
       confirmState.value = {
         isOpen: true,
         ...options,

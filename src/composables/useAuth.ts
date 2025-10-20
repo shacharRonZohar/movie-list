@@ -12,6 +12,13 @@ export interface LoginCredentials {
   password: string
 }
 
+/**
+ * Authentication composable
+ * Manages user authentication state, login, and logout functionality
+ * Uses TanStack Query for data fetching and caching
+ *
+ * @returns Authentication state and methods
+ */
 export function useAuth() {
   const queryClient = useQueryClient()
   const router = useRouter()

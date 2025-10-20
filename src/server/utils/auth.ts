@@ -13,7 +13,7 @@ export interface JwtPayload {
 /**
  * Hash a password using bcrypt
  */
-export async function hashPassword(password: string): Promise<string> {
+export async function hashPassword(password: string) {
   const salt = await bcrypt.genSalt(10)
   return bcrypt.hash(password, salt)
 }
@@ -21,17 +21,14 @@ export async function hashPassword(password: string): Promise<string> {
 /**
  * Verify a password against its hash
  */
-export async function verifyPassword(
-  password: string,
-  hash: string
-): Promise<boolean> {
+export async function verifyPassword(password: string, hash: string) {
   return bcrypt.compare(password, hash)
 }
 
 /**
  * Generate a JWT token for a user
  */
-export function generateToken(payload: JwtPayload): string {
+export function generateToken(payload: JwtPayload) {
   return jwt.sign(payload, JWT_SECRET, {
     expiresIn: JWT_EXPIRATION,
   })
@@ -40,7 +37,7 @@ export function generateToken(payload: JwtPayload): string {
 /**
  * Verify and decode a JWT token
  */
-export function verifyToken(token: string): JwtPayload | null {
+export function verifyToken(token: string) {
   try {
     return jwt.verify(token, JWT_SECRET) as JwtPayload
   } catch {
@@ -51,7 +48,7 @@ export function verifyToken(token: string): JwtPayload | null {
 /**
  * Get user from JWT token in cookies
  */
-export function getUserFromToken(event: H3Event): JwtPayload | null {
+export function getUserFromToken(event: H3Event) {
   const token = getCookie(event, 'auth_token')
 
   if (!token) {
@@ -64,7 +61,7 @@ export function getUserFromToken(event: H3Event): JwtPayload | null {
 /**
  * Require authentication - throws error if not authenticated
  */
-export function requireAuth(event: H3Event): JwtPayload {
+export function requireAuth(event: H3Event) {
   const user = getUserFromToken(event)
 
   if (!user) {
@@ -80,7 +77,7 @@ export function requireAuth(event: H3Event): JwtPayload {
 /**
  * Set authentication cookie
  */
-export function setAuthCookie(event: H3Event, token: string): void {
+export function setAuthCookie(event: H3Event, token: string) {
   setCookie(event, 'auth_token', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
@@ -93,7 +90,7 @@ export function setAuthCookie(event: H3Event, token: string): void {
 /**
  * Clear authentication cookie
  */
-export function clearAuthCookie(event: H3Event): void {
+export function clearAuthCookie(event: H3Event) {
   deleteCookie(event, 'auth_token', {
     path: '/',
   })

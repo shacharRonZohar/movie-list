@@ -5,7 +5,7 @@
 /**
  * Validate email format
  */
-export function isValidEmail(email: string): boolean {
+export function isValidEmail(email: string) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   return emailRegex.test(email)
 }
@@ -13,7 +13,7 @@ export function isValidEmail(email: string): boolean {
 /**
  * Validate username format (alphanumeric, underscore, hyphen, 3-20 chars)
  */
-export function isValidUsername(username: string): boolean {
+export function isValidUsername(username: string) {
   const usernameRegex = /^[a-zA-Z0-9_-]{3,20}$/
   return usernameRegex.test(username)
 }
@@ -21,14 +21,14 @@ export function isValidUsername(username: string): boolean {
 /**
  * Validate password strength (min 6 characters for now, can be enhanced)
  */
-export function isValidPassword(password: string): boolean {
+export function isValidPassword(password: string) {
   return password.length >= 6
 }
 
 /**
  * Sanitize string input by trimming whitespace
  */
-export function sanitizeString(input: string): string {
+export function sanitizeString(input: string) {
   return input.trim()
 }
 
@@ -38,7 +38,7 @@ export function sanitizeString(input: string): string {
 export function validateRequired<T extends Record<string, any>>(
   data: T,
   requiredFields: (keyof T)[]
-): { valid: boolean; missing: string[] } {
+) {
   const missing: string[] = []
 
   for (const field of requiredFields) {

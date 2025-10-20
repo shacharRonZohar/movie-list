@@ -1,5 +1,9 @@
 import { clearAuthCookie } from '../../utils/auth'
 
+/**
+ * Logout endpoint
+ * Clears the authentication cookie and invalidates the session
+ */
 export default defineEventHandler(async event => {
   try {
     // Clear the authentication cookie

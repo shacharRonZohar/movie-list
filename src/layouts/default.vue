@@ -1,8 +1,17 @@
 <script setup lang="ts">
 const { user, logout, isLoggingOut } = useAuth()
+const { confirm } = useConfirm()
 
-const handleLogout = () => {
-  if (confirm('Are you sure you want to logout?')) {
+const handleLogout = async () => {
+  const confirmed = await confirm({
+    title: 'Confirm Logout',
+    message: 'Are you sure you want to logout?',
+    confirmText: 'Logout',
+    cancelText: 'Cancel',
+    variant: 'warning',
+  })
+
+  if (confirmed) {
     logout()
   }
 }

@@ -6,8 +6,13 @@ import {
   isValidPassword,
   validateRequired,
 } from '../../utils/validation'
+import { defineProtectedEventHandler } from '../../utils/defineProtectedEventHandler'
 
-export default defineEventHandler(async event => {
+/**
+ * Create new user endpoint
+ * Creates a new user with validated credentials (requires authentication)
+ */
+export default defineProtectedEventHandler(async event => {
   try {
     // Parse request body
     const body = await readBody(event)
@@ -80,9 +85,9 @@ export default defineEventHandler(async event => {
     return {
       user,
     }
-  } catch (error: any) {
+  } catch (error) {
     // If it's already an H3Error, rethrow it
-    if (error.statusCode) {
+    if (error && typeof error === 'object' && 'statusCode' in error) {
       throw error
     }
 

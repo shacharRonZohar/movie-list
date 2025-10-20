@@ -1,7 +1,16 @@
 import { prisma } from '../../utils/prisma'
+import { defineProtectedEventHandler } from '../../utils/defineProtectedEventHandler'
 
-export default defineEventHandler(async _event => {
+/**
+ * Get all users endpoint
+ * Returns a list of all users (requires authentication)
+ */
+export default defineProtectedEventHandler(async event => {
   try {
+    // Access authenticated user from context
+    const { user } = event.context
+    console.log('Authenticated user:', user?.username)
+
     // Fetch all users (without password hashes)
     const users = await prisma.user.findMany({
       select: {

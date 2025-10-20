@@ -125,14 +125,14 @@ const typeClasses = {
   error: 'bg-red-50 text-red-800 border border-red-200',
   warning: 'bg-amber-50 text-amber-800 border border-amber-200',
   info: 'bg-blue-50 text-blue-800 border border-blue-200',
-}
+} as const
 
 const positionClasses = {
   'top-right': 'top-4 right-4',
   'top-center': 'top-4 left-1/2 -translate-x-1/2',
   'bottom-right': 'bottom-4 right-4',
   'bottom-center': 'bottom-4 left-1/2 -translate-x-1/2',
-}
+} as const
 
 const close = () => {
   visible.value = false

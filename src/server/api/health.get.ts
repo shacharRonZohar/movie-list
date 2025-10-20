@@ -1,5 +1,9 @@
 import { prisma } from '~/server/utils/prisma'
 
+/**
+ * Health check endpoint
+ * Returns the health status of the API and database connection
+ */
 export default defineEventHandler(async event => {
   try {
     // Check database connection
