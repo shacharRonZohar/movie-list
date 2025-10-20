@@ -45,7 +45,7 @@ model Content {
   createdById   String   @map("created_by_id")
   requestedBy   User     @relation("RequestedBy", fields: [requestedById], references: [id])
   requestedById String   @map("requested_by_id")
-  order         Int      @default(autoincrement()) @map("order")
+  order         Int      @map("order")
 
   @@map("content")
 }

@@ -338,7 +338,7 @@ export const ContentCreateInputSchema: z.ZodType<Prisma.ContentCreateInput> = z.
   title: z.string(),
   status: z.lazy(() => StatusSchema).optional(),
   createdAt: z.coerce.date().optional(),
-  order: z.number().int().optional(),
+  order: z.number().int(),
   createdBy: z.lazy(() => UserCreateNestedOneWithoutCreatedContentInputSchema),
   requestedBy: z.lazy(() => UserCreateNestedOneWithoutRequestedContentInputSchema),
 });
@@ -350,7 +350,7 @@ export const ContentUncheckedCreateInputSchema: z.ZodType<Prisma.ContentUnchecke
   createdAt: z.coerce.date().optional(),
   createdById: z.string(),
   requestedById: z.string(),
-  order: z.number().int().optional(),
+  order: z.number().int(),
 });
 
 export const ContentUpdateInputSchema: z.ZodType<Prisma.ContentUpdateInput> = z.strictObject({
@@ -380,7 +380,7 @@ export const ContentCreateManyInputSchema: z.ZodType<Prisma.ContentCreateManyInp
   createdAt: z.coerce.date().optional(),
   createdById: z.string(),
   requestedById: z.string(),
-  order: z.number().int().optional(),
+  order: z.number().int(),
 });
 
 export const ContentUpdateManyMutationInputSchema: z.ZodType<Prisma.ContentUpdateManyMutationInput> = z.strictObject({
@@ -828,7 +828,7 @@ export const ContentCreateWithoutCreatedByInputSchema: z.ZodType<Prisma.ContentC
   title: z.string(),
   status: z.lazy(() => StatusSchema).optional(),
   createdAt: z.coerce.date().optional(),
-  order: z.number().int().optional(),
+  order: z.number().int(),
   requestedBy: z.lazy(() => UserCreateNestedOneWithoutRequestedContentInputSchema),
 });
 
@@ -838,7 +838,7 @@ export const ContentUncheckedCreateWithoutCreatedByInputSchema: z.ZodType<Prisma
   status: z.lazy(() => StatusSchema).optional(),
   createdAt: z.coerce.date().optional(),
   requestedById: z.string(),
-  order: z.number().int().optional(),
+  order: z.number().int(),
 });
 
 export const ContentCreateOrConnectWithoutCreatedByInputSchema: z.ZodType<Prisma.ContentCreateOrConnectWithoutCreatedByInput> = z.strictObject({
@@ -856,7 +856,7 @@ export const ContentCreateWithoutRequestedByInputSchema: z.ZodType<Prisma.Conten
   title: z.string(),
   status: z.lazy(() => StatusSchema).optional(),
   createdAt: z.coerce.date().optional(),
-  order: z.number().int().optional(),
+  order: z.number().int(),
   createdBy: z.lazy(() => UserCreateNestedOneWithoutCreatedContentInputSchema),
 });
 
@@ -866,7 +866,7 @@ export const ContentUncheckedCreateWithoutRequestedByInputSchema: z.ZodType<Pris
   status: z.lazy(() => StatusSchema).optional(),
   createdAt: z.coerce.date().optional(),
   createdById: z.string(),
-  order: z.number().int().optional(),
+  order: z.number().int(),
 });
 
 export const ContentCreateOrConnectWithoutRequestedByInputSchema: z.ZodType<Prisma.ContentCreateOrConnectWithoutRequestedByInput> = z.strictObject({
@@ -1034,7 +1034,7 @@ export const ContentCreateManyCreatedByInputSchema: z.ZodType<Prisma.ContentCrea
   status: z.lazy(() => StatusSchema).optional(),
   createdAt: z.coerce.date().optional(),
   requestedById: z.string(),
-  order: z.number().int().optional(),
+  order: z.number().int(),
 });
 
 export const ContentCreateManyRequestedByInputSchema: z.ZodType<Prisma.ContentCreateManyRequestedByInput> = z.strictObject({
@@ -1043,7 +1043,7 @@ export const ContentCreateManyRequestedByInputSchema: z.ZodType<Prisma.ContentCr
   status: z.lazy(() => StatusSchema).optional(),
   createdAt: z.coerce.date().optional(),
   createdById: z.string(),
-  order: z.number().int().optional(),
+  order: z.number().int(),
 });
 
 export const ContentUpdateWithoutCreatedByInputSchema: z.ZodType<Prisma.ContentUpdateWithoutCreatedByInput> = z.strictObject({

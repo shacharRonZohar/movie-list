@@ -17,12 +17,22 @@ const queryClient = useQueryClient()
 const title = ref('')
 const status = ref('WANT_TO_WATCH')
 const requestedById = ref('')
+const position = ref<number | undefined>(undefined)
 
 // Fetch users
 const { data: usersData, isLoading: isLoadingUsers } = useQuery({
   queryKey: ['users'],
   queryFn: async () => {
     const response = await $fetch('/api/users')
+    return response
+  },
+})
+
+// Fetch content count for position options
+const { data: contentData } = useQuery({
+  queryKey: ['content'],
+  queryFn: async () => {
+    const response = await $fetch('/api/content')
     return response
   },
 })
@@ -51,6 +61,7 @@ const addContentMutation = useMutation({
     title: string
     status: string
     requestedById: string
+    position?: number
   }) => {
     const result = await $fetch('/api/content', {
       method: 'POST',
@@ -73,6 +84,7 @@ const addContentMutation = useMutation({
 const closeModal = () => {
   title.value = ''
   status.value = 'WANT_TO_WATCH'
+  position.value = undefined
   if (usersData.value?.users && usersData.value.users.length > 0) {
     requestedById.value = usersData.value.users[0].id
   }
@@ -94,6 +106,7 @@ const handleSubmit = () => {
     title: title.value.trim(),
     status: status.value,
     requestedById: requestedById.value,
+    position: position.value,
   })
 }
 
@@ -196,6 +209,31 @@ onUnmounted(() => {
               </select>
             </div>
 
+            <!-- Position Input -->
+            <div>
+              <label
+                for="position"
+                class="block text-sm font-medium text-gray-700 mb-1.5 sm:mb-2"
+              >
+                Position in List 📍
+              </label>
+              <select
+                id="position"
+                v-model.number="position"
+                class="input w-full text-sm sm:text-base"
+                :disabled="addContentMutation.isPending.value"
+              >
+                <option :value="undefined">At the end (default)</option>
+                <option
+                  v-for="i in (contentData?.length || 0) + 1"
+                  :key="i"
+                  :value="i"
+                >
+                  Position {{ i }}{{ i === 1 ? ' (top)' : '' }}
+                </option>
+              </select>
+            </div>
+
             <!-- Status Select -->
             <div>
               <label
@@ -235,8 +273,8 @@ onUnmounted(() => {
                 class="btn-primary flex-1 py-2.5 sm:py-2 text-sm sm:text-base order-1 sm:order-2"
                 :disabled="
                   addContentMutation.isPending.value ||
-                    !title.trim() ||
-                    !requestedById
+                  !title.trim() ||
+                  !requestedById
                 "
               >
                 <span
