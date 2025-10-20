@@ -47,9 +47,8 @@ export default defineNuxtConfig({
           'cache-control': 'public, max-age=31536000, immutable',
         },
       },
-      // API security headers
-      '/api/**': {
-        cors: true,
+      // API and page security headers
+      '/**': {
         headers: {
           'X-Content-Type-Options': 'nosniff',
           'X-Frame-Options': 'DENY',
@@ -57,29 +56,6 @@ export default defineNuxtConfig({
           'Referrer-Policy': 'strict-origin-when-cross-origin',
         },
       },
-    },
-  },
-
-  // Production security headers
-  security: {
-    headers: {
-      contentSecurityPolicy:
-        process.env.NODE_ENV === 'production'
-          ? {
-              'base-uri': ["'self'"],
-              'font-src': ["'self'", 'https:', 'data:'],
-              'form-action': ["'self'"],
-              'frame-ancestors': ["'self'"],
-              'img-src': ["'self'", 'data:', 'https:'],
-              'object-src': ["'none'"],
-              'script-src-attr': ["'none'"],
-              'style-src': ["'self'", 'https:', "'unsafe-inline'"],
-              'upgrade-insecure-requests': true,
-            }
-          : false,
-      xContentTypeOptions: 'nosniff',
-      xFrameOptions: 'DENY',
-      xXSSProtection: '1; mode=block',
     },
   },
 
