@@ -2,17 +2,22 @@
   <Teleport to="body">
     <Transition name="modal">
       <div v-if="isOpen" class="modal-overlay" @click="handleOverlayClick">
-        <div class="modal-content" @click.stop>
-          <div class="card p-8 animate-scale-in">
+        <div
+          class="fixed inset-x-0 bottom-0 sm:inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+          @click.stop
+        >
+          <div
+            class="card p-6 sm:p-8 animate-scale-in w-full sm:w-auto sm:min-w-[400px] sm:max-w-md rounded-t-2xl sm:rounded-2xl"
+          >
             <!-- Icon -->
             <div
               :class="[
-                'mx-auto flex items-center justify-center h-14 w-14 rounded-full mb-4',
+                'mx-auto flex items-center justify-center h-12 w-12 sm:h-14 sm:w-14 rounded-full mb-3 sm:mb-4',
                 variantClasses[variant].bg,
               ]"
             >
               <svg
-                class="h-6 w-6"
+                class="h-5 w-5 sm:h-6 sm:w-6"
                 :class="variantClasses[variant].icon"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -28,27 +33,34 @@
             </div>
 
             <!-- Title -->
-            <h3 class="text-xl font-bold text-center mb-2 text-love-deep-rose">
+            <h3
+              class="text-lg sm:text-xl font-bold text-center mb-2 text-love-deep-rose px-2"
+            >
               {{ title }}
             </h3>
 
             <!-- Message -->
-            <p class="text-gray-600 text-center mb-8">
+            <p
+              class="text-sm sm:text-base text-gray-600 text-center mb-6 sm:mb-8 px-2"
+            >
               {{ message }}
             </p>
 
             <!-- Actions -->
-            <div class="flex gap-3">
+            <div class="flex flex-col sm:flex-row gap-3">
               <button
                 v-if="!hideCancel"
                 @click="handleCancel"
-                class="btn-secondary flex-1"
+                class="btn-secondary flex-1 order-2 sm:order-1 py-2.5 text-sm sm:text-base"
               >
                 {{ cancelText }}
               </button>
               <button
                 @click="handleConfirm"
-                :class="['flex-1', variantClasses[variant].button]"
+                :class="[
+                  'flex-1 order-1 sm:order-2 py-2.5 text-sm sm:text-base',
+                  variantClasses[variant].button,
+                ]"
               >
                 {{ confirmText }}
               </button>

@@ -118,44 +118,46 @@ onUnmounted(() => {
     <Transition name="modal">
       <div
         v-if="open"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+        class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 backdrop-blur-sm"
         @click="closeModal"
       >
         <div
-          class="relative w-full max-w-2xl bg-romantic-cream rounded-3xl shadow-2xl shadow-love-rose/20 p-8"
+          class="relative w-full max-w-2xl bg-romantic-cream rounded-t-3xl sm:rounded-3xl shadow-2xl shadow-love-rose/20 p-6 sm:p-8 max-h-[90vh] overflow-y-auto"
           @click.stop
         >
           <!-- Close Button -->
           <button
             type="button"
-            class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-full bg-love-blush/50 hover:bg-love-rose/20 transition-all duration-300 hover:rotate-90 group"
+            class="absolute top-4 sm:top-6 right-4 sm:right-6 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-love-blush/50 hover:bg-love-rose/20 transition-all duration-300 hover:rotate-90 group z-10"
             aria-label="Close"
             @click="closeModal"
           >
             <span
-              class="text-2xl text-love-rose group-hover:text-love-twilight transition-colors"
+              class="text-xl sm:text-2xl text-love-rose group-hover:text-love-twilight transition-colors"
             >
               ×
             </span>
           </button>
 
           <!-- Header -->
-          <div class="text-center mb-8">
-            <h2 class="text-4xl font-bold text-romantic-gradient mb-3">
+          <div class="text-center mb-6 sm:mb-8 pr-8">
+            <h2
+              class="text-2xl sm:text-3xl md:text-4xl font-bold text-romantic-gradient mb-2 sm:mb-3"
+            >
               Add Something Special 💕
             </h2>
-            <p class="text-lg text-gray-600">
+            <p class="text-base sm:text-lg text-gray-600">
               Let's add a new movie to our collection ✨
             </p>
           </div>
 
           <!-- Form -->
-          <form class="space-y-6" @submit.prevent="handleSubmit">
+          <form class="space-y-4 sm:space-y-6" @submit.prevent="handleSubmit">
             <!-- Title Input -->
             <div>
               <label
                 for="title"
-                class="block text-sm font-medium text-gray-700 mb-2"
+                class="block text-sm font-medium text-gray-700 mb-1.5 sm:mb-2"
               >
                 Movie Title 🎬
               </label>
@@ -164,7 +166,7 @@ onUnmounted(() => {
                 v-model="title"
                 type="text"
                 placeholder="Enter the movie title..."
-                class="input w-full"
+                class="input w-full text-sm sm:text-base"
                 :disabled="addContentMutation.isPending.value"
                 autofocus
               />
@@ -174,14 +176,14 @@ onUnmounted(() => {
             <div>
               <label
                 for="requestedBy"
-                class="block text-sm font-medium text-gray-700 mb-2"
+                class="block text-sm font-medium text-gray-700 mb-1.5 sm:mb-2"
               >
                 Requested By 💝
               </label>
               <select
                 id="requestedBy"
                 v-model="requestedById"
-                class="input w-full"
+                class="input w-full text-sm sm:text-base"
                 :disabled="addContentMutation.isPending.value || isLoadingUsers"
               >
                 <option
@@ -198,14 +200,14 @@ onUnmounted(() => {
             <div>
               <label
                 for="status"
-                class="block text-sm font-medium text-gray-700 mb-2"
+                class="block text-sm font-medium text-gray-700 mb-1.5 sm:mb-2"
               >
                 Status 📋
               </label>
               <select
                 id="status"
                 v-model="status"
-                class="input w-full"
+                class="input w-full text-sm sm:text-base"
                 :disabled="addContentMutation.isPending.value"
               >
                 <option
@@ -219,10 +221,10 @@ onUnmounted(() => {
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex gap-4 pt-4">
+            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4">
               <button
                 type="button"
-                class="btn-secondary flex-1"
+                class="btn-secondary flex-1 py-2.5 sm:py-2 text-sm sm:text-base order-2 sm:order-1"
                 :disabled="addContentMutation.isPending.value"
                 @click="closeModal"
               >
@@ -230,17 +232,22 @@ onUnmounted(() => {
               </button>
               <button
                 type="submit"
-                class="btn-primary flex-1"
+                class="btn-primary flex-1 py-2.5 sm:py-2 text-sm sm:text-base order-1 sm:order-2"
                 :disabled="
                   addContentMutation.isPending.value ||
                   !title.trim() ||
                   !requestedById
                 "
               >
-                <span v-if="addContentMutation.isPending.value">
+                <span
+                  v-if="addContentMutation.isPending.value"
+                  class="text-sm sm:text-base"
+                >
                   Adding with love... ✨
                 </span>
-                <span v-else> Add to Our Collection ❤️ </span>
+                <span v-else class="text-sm sm:text-base">
+                  Add to Our Collection ❤️
+                </span>
               </button>
             </div>
           </form>
@@ -268,6 +275,13 @@ onUnmounted(() => {
 
 .modal-enter-from > div,
 .modal-leave-to > div {
-  transform: scale(0.95);
+  transform: translateY(100%);
+}
+
+@media (min-width: 640px) {
+  .modal-enter-from > div,
+  .modal-leave-to > div {
+    transform: scale(0.95);
+  }
 }
 </style>

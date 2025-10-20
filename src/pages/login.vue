@@ -37,31 +37,35 @@ const getErrorMessage = (error: unknown) => {
 <template>
   <NuxtLayout name="auth">
     <div
-      class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-love-cherry/20"
+      class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 sm:p-8 border border-love-cherry/20"
     >
       <!-- Header - Warm Welcome -->
-      <div class="text-center mb-8">
-        <div class="flex items-center justify-center space-x-2 mb-3">
-          <span class="text-4xl animate-pulse-soft">💕</span>
-          <h1 class="text-4xl font-bold text-romantic-gradient">
+      <div class="text-center mb-6 sm:mb-8">
+        <div
+          class="flex items-center justify-center space-x-1.5 sm:space-x-2 mb-2 sm:mb-3"
+        >
+          <span class="text-3xl sm:text-4xl animate-pulse-soft">💕</span>
+          <h1 class="text-3xl sm:text-4xl font-bold text-romantic-gradient">
             Our Collection
           </h1>
           <span
-            class="text-4xl animate-pulse-soft"
+            class="text-3xl sm:text-4xl animate-pulse-soft"
             style="animation-delay: 0.5s"
             >💕</span
           >
         </div>
-        <p class="text-gray-600">Welcome to our special movie moments ✨</p>
+        <p class="text-sm sm:text-base text-gray-600 px-4">
+          Welcome to our special movie moments ✨
+        </p>
       </div>
 
       <!-- Login Form -->
-      <form class="space-y-6" @submit.prevent="handleLogin">
+      <form class="space-y-5 sm:space-y-6" @submit.prevent="handleLogin">
         <!-- Username -->
         <div>
           <label
             for="username"
-            class="block text-sm font-medium text-gray-700 mb-1"
+            class="block text-sm font-medium text-gray-700 mb-1.5"
           >
             Username 💫
           </label>
@@ -70,7 +74,7 @@ const getErrorMessage = (error: unknown) => {
             v-model="credentials.username"
             type="text"
             required
-            class="input"
+            class="input text-sm sm:text-base"
             placeholder="Enter your name"
           />
         </div>
@@ -79,7 +83,7 @@ const getErrorMessage = (error: unknown) => {
         <div>
           <label
             for="password"
-            class="block text-sm font-medium text-gray-700 mb-1"
+            class="block text-sm font-medium text-gray-700 mb-1.5"
           >
             Password 🔑
           </label>
@@ -88,7 +92,7 @@ const getErrorMessage = (error: unknown) => {
             v-model="credentials.password"
             type="password"
             required
-            class="input"
+            class="input text-sm sm:text-base"
             placeholder="Your secret key"
           />
         </div>
@@ -96,7 +100,7 @@ const getErrorMessage = (error: unknown) => {
         <!-- Error Message -->
         <div
           v-if="loginError"
-          class="bg-love-coral/10 border border-love-coral/30 text-love-deep-rose px-4 py-3 rounded-lg text-sm"
+          class="bg-love-coral/10 border border-love-coral/30 text-love-deep-rose px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg text-xs sm:text-sm"
         >
           {{ getErrorMessage(loginError) }}
         </div>
@@ -105,7 +109,7 @@ const getErrorMessage = (error: unknown) => {
         <button
           type="submit"
           :disabled="isLoggingIn"
-          class="w-full btn-primary py-3 px-4 text-base"
+          class="w-full btn-primary py-2.5 sm:py-3 px-4 text-sm sm:text-base"
         >
           {{ isLoggingIn ? 'Opening our collection...' : 'Enter ❤️' }}
         </button>
@@ -113,10 +117,12 @@ const getErrorMessage = (error: unknown) => {
 
       <!-- Demo Credentials -->
       <div
-        class="mt-6 p-4 bg-love-blush/20 rounded-lg border border-love-cherry/20"
+        class="mt-5 sm:mt-6 p-3 sm:p-4 bg-love-blush/20 rounded-lg border border-love-cherry/20"
       >
-        <p class="text-xs text-gray-600 text-center mb-2">✨ Test Access:</p>
-        <p class="text-xs text-gray-700 text-center">
+        <p class="text-xs text-gray-600 text-center mb-1.5 sm:mb-2">
+          ✨ Test Access:
+        </p>
+        <p class="text-xs text-gray-700 text-center leading-relaxed">
           <strong class="text-love-rose">alice</strong> / password123 or
           <strong class="text-love-rose">bob</strong> / password123
         </p>
