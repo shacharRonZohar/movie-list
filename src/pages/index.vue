@@ -122,13 +122,27 @@ definePageMeta({
 
       <!-- Call to action -->
       <div class="text-center animate-fade-in" style="animation-delay: 1.2s">
-        <NuxtLink
-          to="/content"
-          class="btn-primary text-xl px-12 py-4 inline-flex items-center gap-3 group"
+        <div
+          class="flex flex-col sm:flex-row gap-4 justify-center items-center"
         >
-          <span>Meow Meow Meow Meow</span>
-          <span class="group-hover:translate-x-1 transition-transform">❤️</span>
-        </NuxtLink>
+          <NuxtLink
+            to="/content"
+            class="btn-primary text-xl px-12 py-4 inline-flex items-center gap-3 group"
+          >
+            <span>Meow Meow Meow Meow</span>
+            <span class="group-hover:translate-x-1 transition-transform"
+              >❤️</span
+            >
+          </NuxtLink>
+
+          <NuxtLink
+            to="/content/add"
+            class="btn-secondary text-xl px-12 py-4 inline-flex items-center gap-3 group"
+          >
+            <span>Add Something Special</span>
+            <span class="group-hover:scale-110 transition-transform">✨</span>
+          </NuxtLink>
+        </div>
 
         <p class="mt-6 text-gray-500 text-sm">
           Meow meow meow, meow meow meow 💕✨

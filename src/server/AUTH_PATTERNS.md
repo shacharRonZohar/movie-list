@@ -14,7 +14,7 @@ import { defineProtectedEventHandler } from '../../utils/defineProtectedEventHan
 
 export default defineProtectedEventHandler(async event => {
   // User is guaranteed to be authenticated here
-  const { user } = event.context // { userId: string, username: string }
+  const { user } = event.context // { id: string, username: string }
 
   return {
     message: `Hello ${user.username}!`,
@@ -39,7 +39,7 @@ User will be `null` if not authenticated, but the handler still runs.
 import { defineOptionalAuthEventHandler } from '../../utils/defineProtectedEventHandler'
 
 export default defineOptionalAuthEventHandler(async event => {
-  const { user } = event.context // { userId: string, username: string } | undefined
+  const { user } = event.context // { id: string, username: string } | undefined
 
   if (user) {
     return { message: `Welcome back, ${user.username}!` }
@@ -110,7 +110,7 @@ export function defineAdminEventHandler<T extends EventHandlerRequest>(
 
     // Check if user has admin role
     const dbUser = await prisma.user.findUnique({
-      where: { id: user.userId },
+      where: { id: user.id },
       select: { role: true },
     })
 
@@ -168,7 +168,7 @@ export default defineOptionalAuthEventHandler(async event => {
   const movies = await prisma.movie.findMany({
     where: {
       // Show user's private movies if authenticated
-      OR: [{ isPublic: true }, ...(user ? [{ userId: user.userId }] : [])],
+      OR: [{ isPublic: true }, ...(user ? [{ userId: user.id }] : [])],
     },
   })
 

@@ -1,12 +1,13 @@
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import type { H3Event } from 'h3'
+import { validateJWTUser } from './validation'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-change-this'
 const JWT_EXPIRATION = '7d'
 
 export interface JwtPayload {
-  userId: string
+  id: string
   username: string
 }
 
@@ -39,7 +40,7 @@ export function generateToken(payload: JwtPayload) {
  */
 export function verifyToken(token: string) {
   try {
-    return jwt.verify(token, JWT_SECRET) as JwtPayload
+    return jwt.verify(token, JWT_SECRET)
   } catch {
     return null
   }
@@ -55,23 +56,9 @@ export function getUserFromToken(event: H3Event) {
     return null
   }
 
-  return verifyToken(token)
-}
+  const user = verifyToken(token)
 
-/**
- * Require authentication - throws error if not authenticated
- */
-export function requireAuth(event: H3Event) {
-  const user = getUserFromToken(event)
-
-  if (!user) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Unauthorized - Please log in',
-    })
-  }
-
-  return user
+  return validateJWTUser(user)
 }
 
 /**
@@ -94,4 +81,15 @@ export function clearAuthCookie(event: H3Event) {
   deleteCookie(event, 'auth_token', {
     path: '/',
   })
+}
+
+export function requireAuth(event: H3Event) {
+  const user = getUserFromToken(event)
+  if (!user) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized',
+    })
+  }
+  return user
 }

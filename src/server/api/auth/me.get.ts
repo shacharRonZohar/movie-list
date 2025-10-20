@@ -11,7 +11,7 @@ export default defineProtectedEventHandler(async event => {
 
     // Fetch full user data from database
     const user = await prisma.user.findUnique({
-      where: { id: tokenPayload.userId },
+      where: { id: tokenPayload.id },
       select: {
         id: true,
         username: true,

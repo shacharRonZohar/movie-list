@@ -1,5 +1,6 @@
 import type { EventHandler, EventHandlerRequest } from 'h3'
-import { requireAuth, getUserFromToken, type JwtPayload } from './auth'
+import { requireAuth, getUserFromToken } from './auth'
+import type { JWTUser } from './validation'
 
 /**
  * Define a protected event handler that requires authentication
@@ -42,6 +43,6 @@ export function defineOptionalAuthEventHandler<T extends EventHandlerRequest>(
 // Extend H3 event context type to include user
 declare module 'h3' {
   interface H3EventContext {
-    user?: JwtPayload
+    user?: JWTUser
   }
 }

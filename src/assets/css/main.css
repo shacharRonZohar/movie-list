@@ -40,8 +40,28 @@
     transform: translateY(-1px);
   }
 
+  .btn-primary:disabled {
+    @apply opacity-50 cursor-not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .btn-primary:disabled:hover {
+    @apply bg-love-rose;
+    box-shadow: none;
+    transform: none;
+  }
+
   .btn-secondary {
     @apply btn bg-love-blush text-love-deep-rose hover:bg-love-cherry focus:ring-love-lavender;
+  }
+
+  .btn-secondary:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  .btn-secondary:disabled:hover {
+    @apply bg-love-blush;
   }
 
   .btn-danger {

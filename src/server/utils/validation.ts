@@ -2,6 +2,9 @@
  * Validation utilities for input sanitization and validation
  */
 
+import type z from 'zod'
+import { UserSchema } from './zod'
+
 /**
  * Validate email format
  */
@@ -55,4 +58,19 @@ export function validateRequired<T extends Record<string, any>>(
     valid: missing.length === 0,
     missing,
   }
+}
+
+export const JWT_USER_SCHEMA = UserSchema.pick({
+  id: true,
+  username: true,
+})
+export type JWTUser = z.infer<typeof JWT_USER_SCHEMA>
+
+export function validateJWTUser(user: unknown) {
+  const validation = JWT_USER_SCHEMA.safeParse(user)
+  if (!validation.success) {
+    return null
+  }
+
+  return validation.data
 }

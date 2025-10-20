@@ -50,6 +50,7 @@ export function useAuth() {
     },
     onSuccess: user => {
       queryClient.setQueryData(['auth', 'me'], user)
+      console.log('user', user)
       router.push('/content')
     },
   })

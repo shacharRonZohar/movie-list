@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
 
 defineOptions({
@@ -9,6 +10,8 @@ definePageMeta({
   layout: 'default',
   middleware: 'auth',
 })
+
+const showAddModal = ref(false)
 
 const {
   data: content,
@@ -92,13 +95,21 @@ const getStatusColor = (status: string) => {
         <p class="text-xl text-gray-600 mb-6">
           Nothing here yet. Ready to add our first movie? 💕
         </p>
-        <button class="btn-primary text-lg px-8 py-3">
+        <button
+          class="btn-primary text-lg px-8 py-3"
+          @click="showAddModal = true"
+        >
           Add Our First Movie ✨
         </button>
       </div>
 
       <!-- Content List -->
       <div v-else class="space-y-4">
+        <div class="flex justify-end mb-6">
+          <button class="btn-primary" @click="showAddModal = true">
+            Add New Movie ✨
+          </button>
+        </div>
         <div
           v-for="item in content"
           :key="item.id"
@@ -130,5 +141,8 @@ const getStatusColor = (status: string) => {
         </div>
       </div>
     </div>
+
+    <!-- Add Content Modal -->
+    <AddContentModal :open="showAddModal" @close="showAddModal = false" />
   </div>
 </template>
