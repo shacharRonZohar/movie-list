@@ -3,7 +3,7 @@
     <div
       v-if="visible"
       :class="[
-        'fixed z-50 max-w-md px-6 py-4 rounded-lg shadow-lg',
+        'fixed z-50 max-w-md px-6 py-4 rounded-2xl shadow-lg',
         'flex items-center gap-3 animate-slide-up',
         positionClasses[position],
         typeClasses[type],
@@ -121,10 +121,13 @@ const emit = defineEmits<{
 const visible = ref(true)
 
 const typeClasses = {
-  success: 'bg-green-50 text-green-800 border border-green-200',
-  error: 'bg-red-50 text-red-800 border border-red-200',
-  warning: 'bg-amber-50 text-amber-800 border border-amber-200',
-  info: 'bg-blue-50 text-blue-800 border border-blue-200',
+  success:
+    'bg-status-cherished/10 text-love-deep-rose border border-love-gold/30 backdrop-blur-sm',
+  error:
+    'bg-love-coral/10 text-love-deep-rose border border-love-coral/30 backdrop-blur-sm',
+  warning:
+    'bg-love-peach/20 text-love-deep-rose border border-love-coral/30 backdrop-blur-sm',
+  info: 'bg-love-lavender/10 text-love-deep-rose border border-love-lavender/30 backdrop-blur-sm',
 } as const
 
 const positionClasses = {

@@ -1,6 +1,6 @@
-# Nuxt 3 Starter Template
+# 💕 Our Movie Collection
 
-A clean, production-ready Nuxt 3 starter template with authentication, database integration, and essential utilities. Perfect for building modern web applications.
+A romantic movie list app built with love, designed as a special gift to share and cherish movie moments together.
 
 ## 🎯 Features
 
@@ -247,24 +247,34 @@ project/
 └── package.json               # Dependencies and scripts
 ```
 
-## 🎨 Design System
+## 🎨 Romantic Design System
 
-The application includes a custom Tailwind CSS design system with:
+The application features a beautiful romantic theme with warm colors and loving language.
+
+### 💝 Theme Guide
+
+See **[THEMING_GUIDE.md](./THEMING_GUIDE.md)** for complete romantic theme documentation including:
+
+- Color palette (Rose, Blush, Lavender, Gold)
+- Loving language guidelines
+- Component styling
+- Animations and effects
+- Dark mode (intimate evenings)
 
 ### Pre-built Component Classes
 
-- `.btn`, `.btn-primary`, `.btn-secondary`, `.btn-danger`
-- `.input`, `.input-error`
-- `.card`, `.card-hover`
-- `.badge`
-- `.skeleton`
-- `.modal-overlay`, `.modal-content`
+- `.btn-primary` - Rose gradient with glow
+- `.btn-secondary` - Soft blush/peach
+- `.input` - Gentle focus with rose border
+- `.card`, `.card-hover` - Warm, inviting cards
+- `.badge` - Status badges with romantic colors
 
 ### Custom Colors
 
-- **Brand**: Primary and secondary colors
-- **Status**: Success, warning, danger, info
-- **Neutral**: Gray scale
+- **Love Palette**: Rose, Blush, Cherry, Lavender, Gold, Coral, Peach
+- **Backgrounds**: Canvas, Cream, Romantic gradient
+- **Status**: Dreaming, Watching Together, Cherished, Paused
+- **Priority**: Gentle, Worth It, Can't Wait!
 
 ## 🧰 Included Infrastructure
 
@@ -415,4 +425,4 @@ This project is open source and available under the MIT License.
 
 ---
 
-Built with ❤️ using Nuxt 3
+_Built with love 💕 for sharing special movie moments together ✨_

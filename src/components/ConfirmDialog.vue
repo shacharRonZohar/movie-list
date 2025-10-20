@@ -3,11 +3,11 @@
     <Transition name="modal">
       <div v-if="isOpen" class="modal-overlay" @click="handleOverlayClick">
         <div class="modal-content" @click.stop>
-          <div class="card p-6 animate-scale-in">
+          <div class="card p-8 animate-scale-in">
             <!-- Icon -->
             <div
               :class="[
-                'mx-auto flex items-center justify-center h-12 w-12 rounded-full mb-4',
+                'mx-auto flex items-center justify-center h-14 w-14 rounded-full mb-4',
                 variantClasses[variant].bg,
               ]"
             >
@@ -28,12 +28,12 @@
             </div>
 
             <!-- Title -->
-            <h3 class="text-lg font-semibold text-center mb-2">
+            <h3 class="text-xl font-bold text-center mb-2 text-love-deep-rose">
               {{ title }}
             </h3>
 
             <!-- Message -->
-            <p class="text-gray-600 text-center mb-6">
+            <p class="text-gray-600 text-center mb-8">
               {{ message }}
             </p>
 
@@ -86,19 +86,19 @@ const emit = defineEmits<{
 
 const variantClasses = {
   danger: {
-    bg: 'bg-red-100',
-    icon: 'text-red-600',
+    bg: 'bg-love-coral/20',
+    icon: 'text-love-coral',
     button: 'btn-danger',
   },
   warning: {
-    bg: 'bg-amber-100',
-    icon: 'text-amber-600',
+    bg: 'bg-love-peach/30',
+    icon: 'text-love-coral',
     button:
-      'btn bg-amber-600 text-white hover:bg-amber-700 focus:ring-amber-500',
+      'btn bg-love-coral text-white hover:bg-love-deep-rose focus:ring-love-coral',
   },
   info: {
-    bg: 'bg-blue-100',
-    icon: 'text-blue-600',
+    bg: 'bg-love-lavender/20',
+    icon: 'text-love-rose',
     button: 'btn-primary',
   },
 } as const

@@ -1,0 +1,190 @@
+---
+alwaysApply: true
+---
+
+# 💕 Romantic Theme Rules
+
+This project is a gift of love. Every design decision, color choice, and word should reflect warmth, affection, and care.
+
+## Design Principles
+
+### 1. Color Usage
+
+- **Primary Colors**: Use `love-rose`, `love-blush`, `love-lavender` from the romantic palette
+- **Backgrounds**: Use `romantic-canvas`, `romantic-cream`, or `bg-romantic-gradient`
+- **Accents**: Gold (`love-gold`) for special moments, coral (`love-coral`) for energy
+- **Avoid**: Harsh reds, cold blues, stark blacks (except twilight mode)
+
+### 2. Language & Copy
+
+Always use warm, loving language:
+
+❌ **Technical/Cold** → ✅ **Loving/Warm**
+
+- "Delete" → "Remove Gently"
+- "Error" → "Oops! Let's try that again together"
+- "Success" → "Added with love! ❤️"
+- "Want to Watch" → "Movies We'll Love" or "Dreaming"
+- "Watching" → "Watching Together"
+- "Watched" → "Our Favorites" or "Cherished"
+- "On Hold" → "Taking a Break" or "Paused"
+- "Dropped" → "Not For Us"
+- "User" → Person's name or "my love"
+- "List" → "Collection"
+- "App" → "Our Collection"
+
+### 3. Emojis & Icons
+
+Use emojis generously to add warmth:
+
+- Hearts: ❤️ 💕 💖 💗 💝 💓
+- Sparkles: ✨ ⭐ 🌟 💫
+- Love: 💑 👫 💏
+- Special: 🎬 🎥 🍿 🎭
+
+### 4. Components
+
+#### Buttons
+
+- Use `btn-primary` for main actions (rose gradient)
+- Use `btn-secondary` for supporting actions (blush/peach)
+- Add gentle hover effects with lift and glow
+
+#### Cards
+
+- Always use `card-hover` for interactive cards
+- Rounded corners: `rounded-2xl` (softer than `rounded-lg`)
+- Soft shadows with pink/rose tints
+
+#### Inputs
+
+- Use the `.input` class with romantic focus states
+- Placeholders should be inviting: "Find something special..."
+- Labels can include emojis
+
+#### Modals & Dialogs
+
+- Titles should be warm and reassuring
+- Confirm buttons: "Yes, please" instead of "OK"
+- Cancel buttons: "Not now" or "Maybe later"
+
+### 5. Animations
+
+Prefer gentle, flowing animations:
+
+- `animate-float` for decorative elements
+- `animate-heartbeat` for favorites/likes
+- `animate-pulse-soft` for subtle emphasis
+- `animate-glow` for special moments
+- Avoid harsh, jarring transitions
+
+### 6. Typography
+
+- Headings: Use gradient text when appropriate (`text-romantic-gradient`)
+- Body: Comfortable, easy-to-read
+- Emphasis: Colored text (`text-love-rose`) over bold when possible
+
+### 7. Spacing & Layout
+
+- Generous spacing (more breathing room)
+- Soft edges and rounded corners
+- Warm negative space
+
+### 8. Status & States
+
+Status colors have special meaning:
+
+- `status-dreaming` (Lavender): Movies you dream of watching together
+- `status-watching-together` (Rose): Currently enjoying
+- `status-cherished` (Gold): Treasured favorites
+- `status-paused` (Peach): Taking a break
+- `status-not-for-us` (Deep Rose): Moving on gracefully
+
+### 9. Success Messages
+
+All success messages should feel celebratory:
+
+- "Added with love! ❤️"
+- "Updated beautifully! ✨"
+- "Removed gently 💫"
+- "Saved to our collection! 💕"
+
+### 10. Error Messages
+
+Errors should be gentle and supportive:
+
+- "Oops! Let's try that again together"
+- "Something didn't work. Want to try once more? 💫"
+- "Hmm, that doesn't seem right. Let's fix it together"
+
+### 11. Loading States
+
+Loading messages should be anticipatory:
+
+- "Finding something special for us..."
+- "Preparing our favorites..."
+- "Getting everything ready..."
+- "Just a moment, my love..."
+
+### 12. Empty States
+
+Empty states should be inviting:
+
+- "Let's start our collection together 💑"
+- "Nothing here yet. Ready to add our first movie? 💕"
+- "Our journey begins here ✨"
+
+## Implementation Checklist
+
+When adding new features, ensure:
+
+- [ ] Colors use the romantic palette
+- [ ] Language is warm and loving
+- [ ] Emojis are used appropriately
+- [ ] Animations are gentle
+- [ ] Messages are supportive
+- [ ] Buttons have romantic styling
+- [ ] Cards use soft shadows
+- [ ] Forms have gentle focus states
+
+## Examples
+
+### Good ✅
+
+```vue
+<button class="btn-primary">
+  Add to Our Collection ❤️
+</button>
+
+<h2 class="text-2xl font-bold text-romantic-gradient">
+  Movies We'll Love Together
+</h2>
+
+<div class="card-hover p-6">
+  <p class="text-gray-600">
+    Let's find something special to watch tonight ✨
+  </p>
+</div>
+```
+
+### Avoid ❌
+
+```vue
+<button class="bg-blue-600 text-white">
+  Add Movie
+</button>
+
+<h2 class="text-2xl font-bold text-gray-900">
+  Watch List
+</h2>
+
+<div class="bg-white border p-6">
+  <p class="text-gray-600">
+    No movies found.
+  </p>
+</div>
+```
+
+---
+
+_Remember: This is a gift. Every interaction should feel like love._ 💕✨

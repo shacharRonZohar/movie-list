@@ -4,26 +4,48 @@
 
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-romantic-canvas text-gray-900;
+    font-family:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+      Arial, sans-serif;
+  }
+
+  /* Romantic gradient backgrounds */
+  .bg-romantic-gradient {
+    background: linear-gradient(135deg, #fff5f7 0%, #ffe5ec 100%);
+  }
+
+  .bg-love-gradient {
+    background: linear-gradient(135deg, #ff6b9d 0%, #e6a8d7 100%);
+  }
+
+  .bg-gold-gradient {
+    background: linear-gradient(135deg, #ffd700 0%, #ffc857 100%);
   }
 }
 
 @layer components {
-  /* Button Styles */
+  /* Button Styles - With Love */
   .btn {
-    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2;
   }
 
   .btn-primary {
-    @apply btn bg-brand-primary text-white hover:bg-purple-700 focus:ring-brand-primary;
+    @apply btn bg-love-rose text-white hover:bg-love-deep-rose focus:ring-love-rose shadow-sm hover:shadow-md;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 4px 12px rgba(255, 107, 157, 0.4);
+    transform: translateY(-1px);
   }
 
   .btn-secondary {
-    @apply btn bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-400;
+    @apply btn bg-love-blush text-love-deep-rose hover:bg-love-cherry focus:ring-love-lavender;
   }
 
   .btn-danger {
-    @apply btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+    @apply btn bg-love-coral text-white hover:bg-love-deep-rose focus:ring-love-coral;
   }
 
   .btn-sm {
@@ -34,22 +56,31 @@
     @apply px-6 py-3 text-lg;
   }
 
-  /* Input Styles */
+  /* Input Styles - Gentle Focus */
   .input {
-    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all;
+    @apply w-full px-4 py-2 border border-love-cherry rounded-lg focus:outline-none focus:ring-2 focus:ring-love-rose focus:border-transparent transition-all bg-white;
+  }
+
+  .input:focus {
+    box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
   }
 
   .input-error {
-    @apply border-red-500 focus:ring-red-500;
+    @apply border-love-coral focus:ring-love-coral;
   }
 
-  /* Card Styles */
+  /* Card Styles - Warm & Inviting */
   .card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-200;
+    @apply bg-white rounded-2xl shadow-sm border border-love-cherry/30 overflow-hidden transition-all duration-300;
   }
 
   .card-hover {
-    @apply card hover:shadow-md hover:border-gray-300;
+    @apply card hover:shadow-lg hover:border-love-rose/50;
+  }
+
+  .card-hover:hover {
+    box-shadow: 0 10px 25px rgba(255, 107, 157, 0.15);
+    transform: translateY(-2px);
   }
 
   /* Status Badge Styles */
@@ -57,9 +88,9 @@
     @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
 
-  /* Skeleton Loader */
+  /* Skeleton Loader - Soft Shimmer */
   .skeleton {
-    @apply animate-skeleton bg-gray-200 rounded;
+    @apply animate-skeleton bg-love-blush/30 rounded;
   }
 
   /* Modal Overlay */
@@ -84,5 +115,33 @@
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  /* Romantic text effects */
+  .text-romantic-gradient {
+    background: linear-gradient(135deg, #ff6b9d 0%, #e6a8d7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gold-gradient {
+    background: linear-gradient(135deg, #ffd700 0%, #ffc857 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Romantic glow effects */
+  .glow-rose {
+    box-shadow: 0 0 15px rgba(255, 107, 157, 0.4);
+  }
+
+  .glow-gold {
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+  }
+
+  .glow-lavender {
+    box-shadow: 0 0 15px rgba(230, 168, 215, 0.4);
   }
 }

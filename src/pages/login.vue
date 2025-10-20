@@ -22,25 +22,37 @@ const getErrorMessage = (error: unknown) => {
     'statusCode' in error &&
     error.statusCode === 401
   ) {
-    return 'Invalid username or password'
+    return "Hmm, that doesn't seem right. Try again? 💫"
   }
   if (error && typeof error === 'object' && 'message' in error) {
     return (
       (error.message as string) ||
-      'An error occurred during login. Please try again.'
+      "Oops! Something went wrong. Let's try that again together."
     )
   }
-  return 'An error occurred during login. Please try again.'
+  return "Oops! Something went wrong. Let's try that again together."
 }
 </script>
 
 <template>
   <NuxtLayout name="auth">
-    <div class="bg-white rounded-lg shadow-2xl p-8">
-      <!-- Header -->
+    <div
+      class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-love-cherry/20"
+    >
+      <!-- Header - Warm Welcome -->
       <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-gray-900 mb-2">🎬 MovieList</h1>
-        <p class="text-gray-600">Sign in to manage your watch list</p>
+        <div class="flex items-center justify-center space-x-2 mb-3">
+          <span class="text-4xl animate-pulse-soft">💕</span>
+          <h1 class="text-4xl font-bold text-romantic-gradient">
+            Our Collection
+          </h1>
+          <span
+            class="text-4xl animate-pulse-soft"
+            style="animation-delay: 0.5s"
+            >💕</span
+          >
+        </div>
+        <p class="text-gray-600">Welcome to our special movie moments ✨</p>
       </div>
 
       <!-- Login Form -->
@@ -51,15 +63,15 @@ const getErrorMessage = (error: unknown) => {
             for="username"
             class="block text-sm font-medium text-gray-700 mb-1"
           >
-            Username
+            Username 💫
           </label>
           <input
             id="username"
             v-model="credentials.username"
             type="text"
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-            placeholder="Enter your username"
+            class="input"
+            placeholder="Enter your name"
           />
         </div>
 
@@ -69,22 +81,22 @@ const getErrorMessage = (error: unknown) => {
             for="password"
             class="block text-sm font-medium text-gray-700 mb-1"
           >
-            Password
+            Password 🔑
           </label>
           <input
             id="password"
             v-model="credentials.password"
             type="password"
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-            placeholder="Enter your password"
+            class="input"
+            placeholder="Your secret key"
           />
         </div>
 
         <!-- Error Message -->
         <div
           v-if="loginError"
-          class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm"
+          class="bg-love-coral/10 border border-love-coral/30 text-love-deep-rose px-4 py-3 rounded-lg text-sm"
         >
           {{ getErrorMessage(loginError) }}
         </div>
@@ -93,18 +105,20 @@ const getErrorMessage = (error: unknown) => {
         <button
           type="submit"
           :disabled="isLoggingIn"
-          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          class="w-full btn-primary py-3 px-4 text-base"
         >
-          {{ isLoggingIn ? 'Signing in...' : 'Sign In' }}
+          {{ isLoggingIn ? 'Opening our collection...' : 'Enter ❤️' }}
         </button>
       </form>
 
       <!-- Demo Credentials -->
-      <div class="mt-6 p-4 bg-gray-50 rounded-md">
-        <p class="text-xs text-gray-600 text-center mb-2">Demo Credentials:</p>
+      <div
+        class="mt-6 p-4 bg-love-blush/20 rounded-lg border border-love-cherry/20"
+      >
+        <p class="text-xs text-gray-600 text-center mb-2">✨ Test Access:</p>
         <p class="text-xs text-gray-700 text-center">
-          <strong>alice</strong> / password123 or <strong>bob</strong> /
-          password123
+          <strong class="text-love-rose">alice</strong> / password123 or
+          <strong class="text-love-rose">bob</strong> / password123
         </p>
       </div>
     </div>
