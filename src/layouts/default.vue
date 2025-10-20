@@ -4,8 +4,8 @@ const { confirm } = useConfirm()
 
 const handleLogout = async () => {
   const confirmed = await confirm({
-    title: 'See You Soon! 💕',
-    message: "Taking a break? We'll be here when you return.",
+    title: 'Woof Woof Woof! 💕',
+    message: "Woof woof woof? Woof woof woof woof woof woof woof.",
     confirmText: 'Sign Out',
     cancelText: 'Stay',
     variant: 'warning',
@@ -71,10 +71,10 @@ const handleLogout = async () => {
               @click="handleLogout"
             >
               <span class="hidden sm:inline">{{
-                isLoggingOut ? 'Until next time...' : 'Sign Out'
+                isLoggingOut ? 'Woof woof woof...' : 'Sign Out'
               }}</span>
               <span class="sm:hidden">{{
-                isLoggingOut ? 'Bye...' : 'Out'
+                isLoggingOut ? 'Woof...' : 'Out'
               }}</span>
             </button>
           </div>

@@ -60,12 +60,12 @@ const addContentMutation = useMutation({
   },
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ['content'] })
-    toast.success('Added with love! ❤️')
+    toast.success('Woof woof woof woof! ❤️')
     closeModal()
   },
   onError: error => {
     toast.error(
-      `Oops! ${error instanceof Error ? error.message : 'Something went wrong'}`
+      `Woof! ${error instanceof Error ? error.message : 'Woof woof woof woof'}`
     )
   },
 })
@@ -81,12 +81,12 @@ const closeModal = () => {
 
 const handleSubmit = () => {
   if (!title.value.trim()) {
-    toast.error('Please enter a title 💫')
+    toast.error('Woof woof woof woof woof 💫')
     return
   }
 
   if (!requestedById.value) {
-    toast.error('Please select who requested this 💫')
+    toast.error('Woof woof woof woof woof woof 💫')
     return
   }
 
@@ -144,10 +144,10 @@ onUnmounted(() => {
             <h2
               class="text-2xl sm:text-3xl md:text-4xl font-bold text-romantic-gradient mb-2 sm:mb-3"
             >
-              Add Something Special 💕
+              Woof Woof Woof Woof 💕
             </h2>
             <p class="text-base sm:text-lg text-gray-600">
-              Let's add a new movie to our collection ✨
+              Woof woof woof woof woof woof woof woof woof ✨
             </p>
           </div>
 
@@ -228,25 +228,25 @@ onUnmounted(() => {
                 :disabled="addContentMutation.isPending.value"
                 @click="closeModal"
               >
-                Maybe Later 💫
+                Woof Woof 💫
               </button>
               <button
                 type="submit"
                 class="btn-primary flex-1 py-2.5 sm:py-2 text-sm sm:text-base order-1 sm:order-2"
                 :disabled="
                   addContentMutation.isPending.value ||
-                  !title.trim() ||
-                  !requestedById
+                    !title.trim() ||
+                    !requestedById
                 "
               >
                 <span
                   v-if="addContentMutation.isPending.value"
                   class="text-sm sm:text-base"
                 >
-                  Adding with love... ✨
+                  Woof woof woof... ✨
                 </span>
                 <span v-else class="text-sm sm:text-base">
-                  Add to Our Collection ❤️
+                  Woof Woof Woof Woof Woof ❤️
                 </span>
               </button>
             </div>

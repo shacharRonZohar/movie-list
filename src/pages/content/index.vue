@@ -58,10 +58,10 @@ const getStatusColor = (status: string) => {
         <h1
           class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-romantic-gradient mb-3 sm:mb-4 px-2"
         >
-          Our Movie Collection 💕
+          Woof Woof Woof 💕
         </h1>
         <p class="text-base sm:text-lg md:text-xl text-gray-700 px-4">
-          All the movies we'll love together ✨
+          Woof woof woof woof woof woof woof ✨
         </p>
       </div>
 
@@ -86,10 +86,10 @@ const getStatusColor = (status: string) => {
       <div v-else-if="error" class="card-hover p-6 sm:p-8 text-center">
         <div class="text-5xl sm:text-6xl mb-3 sm:mb-4">😢</div>
         <h2 class="text-xl sm:text-2xl font-semibold text-love-rose mb-2 px-4">
-          Oops! Something went wrong
+          Woof woof! Woof woof woof woof
         </h2>
         <p class="text-sm sm:text-base text-gray-600 px-4">
-          We couldn't load our collection. Let's try again together 💫
+          Woof woof woof woof woof woof. Woof woof woof woof woof 💫
         </p>
       </div>
 
@@ -98,22 +98,22 @@ const getStatusColor = (status: string) => {
         v-else-if="!content || content.length === 0"
         class="card-hover p-8 sm:p-12 text-center"
       >
-        <div class="text-6xl sm:text-7xl md:text-8xl mb-4 sm:mb-6">🎬</div>
+        <div class="text-6xl sm:text-7xl md:text-8xl mb-4 sm:mb-6">🐶</div>
         <h2
           class="text-2xl sm:text-3xl font-bold text-romantic-gradient mb-3 sm:mb-4 px-4"
         >
-          Let's Start Our Journey Together 💑
+          Woof Woof Woof Woof Woof Woof 💑
         </h2>
         <p
           class="text-base sm:text-lg md:text-xl text-gray-600 mb-4 sm:mb-6 px-4"
         >
-          Nothing here yet. Ready to add our first movie? 💕
+          Woof woof woof. Woof woof woof woof woof woof woof? 💕
         </p>
         <button
           class="btn-primary text-base sm:text-lg px-6 sm:px-8 py-2.5 sm:py-3 w-full sm:w-auto"
           @click="showAddModal = true"
         >
-          Add Our First Movie ✨
+          Woof Woof Woof Woof ✨
         </button>
       </div>
 
@@ -124,7 +124,7 @@ const getStatusColor = (status: string) => {
             class="btn-primary text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-2.5 w-full sm:w-auto"
             @click="showAddModal = true"
           >
-            Add New Movie ✨
+            Woof Woof Woof ✨
           </button>
         </div>
         <div

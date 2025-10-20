@@ -22,15 +22,15 @@ const getErrorMessage = (error: unknown) => {
     'statusCode' in error &&
     error.statusCode === 401
   ) {
-    return "Hmm, that doesn't seem right. Try again? 💫"
+    return "Meow meow, meow meow meow meow. Meow meow? 💫"
   }
   if (error && typeof error === 'object' && 'message' in error) {
     return (
       (error.message as string) ||
-      "Oops! Something went wrong. Let's try that again together."
+      "Meow! Meow meow meow meow. Meow meow meow meow meow meow."
     )
   }
-  return "Oops! Something went wrong. Let's try that again together."
+  return "Meow! Meow meow meow meow. Meow meow meow meow meow meow."
 }
 </script>
 
@@ -46,7 +46,7 @@ const getErrorMessage = (error: unknown) => {
         >
           <span class="text-3xl sm:text-4xl animate-pulse-soft">💕</span>
           <h1 class="text-3xl sm:text-4xl font-bold text-romantic-gradient">
-            Our Collection
+            Meow Meow Meow
           </h1>
           <span
             class="text-3xl sm:text-4xl animate-pulse-soft"
@@ -55,7 +55,7 @@ const getErrorMessage = (error: unknown) => {
           >
         </div>
         <p class="text-sm sm:text-base text-gray-600 px-4">
-          Welcome to our special movie moments ✨
+          Meow meow meow meow meow meow meow ✨
         </p>
       </div>
 
@@ -111,7 +111,7 @@ const getErrorMessage = (error: unknown) => {
           :disabled="isLoggingIn"
           class="w-full btn-primary py-2.5 sm:py-3 px-4 text-sm sm:text-base"
         >
-          {{ isLoggingIn ? 'Opening our collection...' : 'Enter ❤️' }}
+          {{ isLoggingIn ? 'Meow meow meow...' : 'Meow Meow ❤️' }}
         </button>
       </form>
 
@@ -120,7 +120,7 @@ const getErrorMessage = (error: unknown) => {
         class="mt-5 sm:mt-6 p-3 sm:p-4 bg-love-blush/20 rounded-lg border border-love-cherry/20"
       >
         <p class="text-xs text-gray-600 text-center mb-1.5 sm:mb-2">
-          ✨ Test Access:
+          ✨ Meow meow:
         </p>
         <p class="text-xs text-gray-700 text-center leading-relaxed">
           <strong class="text-love-rose">alice</strong> / password123 or
