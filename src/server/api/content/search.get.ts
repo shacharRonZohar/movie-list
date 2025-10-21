@@ -135,7 +135,7 @@ export default defineProtectedEventHandler(async event => {
       (result): result is NonNullable<typeof result> => result !== null
     )
 
-    return validResults
+    return [...localResults, ...validResults]
   } catch (error) {
     console.error('TMDB search error:', error)
     throw createError({
