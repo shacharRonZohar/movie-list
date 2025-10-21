@@ -10,8 +10,12 @@ export function defineProtectedEventHandler<T extends EventHandlerRequest>(
   handler: EventHandler<T>
 ) {
   return defineEventHandler<T>(async event => {
+    console.log('[PROTECTED] Checking auth for:', event.node.req.url)
+
     // Require authentication - throws 401 if not authenticated
     const user = requireAuth(event)
+
+    console.log('[PROTECTED] Auth successful, calling handler')
 
     // Attach user to event context for easy access in handler
     event.context.user = user

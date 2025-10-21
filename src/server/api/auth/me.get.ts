@@ -7,7 +7,11 @@ import { defineProtectedEventHandler } from '../../utils/defineProtectedEventHan
  */
 export default defineProtectedEventHandler(async event => {
   try {
+    console.log('[ME] Getting current user info')
+
     const tokenPayload = event.context.user!
+
+    console.log('[ME] Token payload:', { username: tokenPayload.username })
 
     // Fetch full user data from database
     const user = await prisma.user.findUnique({
@@ -21,11 +25,14 @@ export default defineProtectedEventHandler(async event => {
     })
 
     if (!user) {
+      console.log('[ME] User not found in database:', tokenPayload.id)
       throw createError({
         statusCode: 401,
         statusMessage: 'User not found',
       })
     }
+
+    console.log('[ME] Returning user:', { username: user.username })
 
     return {
       user,
@@ -36,7 +43,7 @@ export default defineProtectedEventHandler(async event => {
       throw error
     }
 
-    console.error('Get current user error:', error)
+    console.error('[ME] Error:', error)
 
     throw createError({
       statusCode: 500,

@@ -53,12 +53,32 @@ export function getUserFromToken(event: H3Event) {
   const token = getCookie(event, 'auth_token')
 
   if (!token) {
+    console.log('[AUTH] No auth_token cookie found')
     return null
   }
 
+  console.log('[AUTH] Found auth_token, verifying...', {
+    tokenLength: token.length,
+  })
+
   const user = verifyToken(token)
 
-  return validateJWTUser(user)
+  if (!user) {
+    console.log('[AUTH] Token verification failed')
+    return null
+  }
+
+  const validatedUser = validateJWTUser(user)
+
+  if (validatedUser) {
+    console.log('[AUTH] User authenticated:', {
+      username: validatedUser.username,
+    })
+  } else {
+    console.log('[AUTH] User validation failed')
+  }
+
+  return validatedUser
 }
 
 /**
@@ -66,15 +86,22 @@ export function getUserFromToken(event: H3Event) {
  */
 export function setAuthCookie(event: H3Event, token: string) {
   const isProduction = process.env.NODE_ENV === 'production'
-  
-  setCookie(event, 'auth_token', token, {
+
+  const cookieOptions = {
     httpOnly: true,
     secure: isProduction,
-    sameSite: isProduction ? 'strict' : 'lax',
+    sameSite: (isProduction ? 'strict' : 'lax') as 'strict' | 'lax',
     maxAge: 60 * 60 * 24 * 7, // 7 days
     path: '/',
     // Don't set domain - let browser handle it automatically
+  }
+
+  console.log('[AUTH] Setting cookie with options:', {
+    ...cookieOptions,
+    tokenLength: token.length,
   })
+
+  setCookie(event, 'auth_token', token, cookieOptions)
 }
 
 /**
@@ -90,12 +117,15 @@ export function clearAuthCookie(event: H3Event) {
 }
 
 export function requireAuth(event: H3Event) {
+  console.log('[AUTH] requireAuth called for:', event.node.req.url)
   const user = getUserFromToken(event)
   if (!user) {
+    console.log('[AUTH] Authentication required but no valid user found')
     throw createError({
       statusCode: 401,
       statusMessage: 'Unauthorized',
     })
   }
+  console.log('[AUTH] Authentication successful for:', user.username)
   return user
 }
