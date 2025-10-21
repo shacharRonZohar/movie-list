@@ -1,13 +1,18 @@
-import { defineProtectedEventHandler } from '~/server/utils/defineProtectedEventHandler'
+/**
+ * Get all list items with their content
+ * GET /api/list
+ */
+
 import { prisma } from '~/server/utils/prisma'
 
-export default defineProtectedEventHandler(async event => {
-  const content = await prisma.content.findMany({
+export default defineProtectedEventHandler(async () => {
+  const listItems = await prisma.listItem.findMany({
     orderBy: {
-      order: 'asc',
+      position: 'asc',
     },
     include: {
-      createdBy: {
+      content: true,
+      addedBy: {
         select: {
           id: true,
           username: true,
@@ -24,5 +29,6 @@ export default defineProtectedEventHandler(async event => {
     },
   })
 
-  return content
+  return listItems
 })
+

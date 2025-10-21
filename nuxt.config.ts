@@ -64,6 +64,7 @@ export default defineNuxtConfig({
     // Private keys (server-side only)
     jwtSecret: process.env.JWT_SECRET,
     databaseUrl: process.env.DATABASE_URL,
+    tmdbApiKey: process.env.TMDB_API_KEY,
     // Public keys (exposed to client)
     public: {
       appUrl: process.env.PUBLIC_APP_URL || '',

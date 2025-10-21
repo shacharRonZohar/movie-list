@@ -23,6 +23,15 @@ enum Status {
   DROPPED
 }
 
+enum ContentType {
+  MOVIE
+  SERIES
+}
+
+enum ExternalSource {
+  TMDB
+}
+
 model User {
   id           String   @id @default(uuid())
   username     String   @unique
@@ -30,22 +39,94 @@ model User {
   displayName  String   @map("display_name")
   createdAt    DateTime @default(now()) @map("created_at")
 
-  createdContent   Content[] @relation("CreatedBy")
-  requestedContent Content[] @relation("RequestedBy")
+  addedListItems     ListItem[] @relation("AddedBy")
+  requestedListItems ListItem[] @relation("RequestedBy")
 
   @@map("users")
 }
 
 model Content {
-  id            String   @id @default(uuid())
-  title         String
-  status        Status   @default(WANT_TO_WATCH)
-  createdAt     DateTime @default(now()) @map("created_at")
-  createdBy     User     @relation("CreatedBy", fields: [createdById], references: [id])
-  createdById   String   @map("created_by_id")
-  requestedBy   User     @relation("RequestedBy", fields: [requestedById], references: [id])
-  requestedById String   @map("requested_by_id")
-  order         Int      @map("order")
+  id             String         @id @default(uuid())
+  externalId     String         @map("external_id") // TMDB ID, OMDB ID, etc.
+  externalSource ExternalSource @default(TMDB) @map("external_source")
 
+  title         String
+  originalTitle String?     @map("original_title")
+  type          ContentType
+  overview      String? // Description/plot
+  tagline       String?
+
+  genres           String[]
+  originalLanguage String?  @map("original_language")
+
+  releaseDate String? @map("release_date") // YYYY-MM-DD format
+  year        Int
+  runtime     Int?
+
+  posterPath   String? @map("poster_path")
+  backdropPath String? @map("backdrop_path")
+  imdbId       String? @map("imdb_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  seriesDetails SeriesDetails?
+  listItems     ListItem?
+
+  @@unique([externalSource, externalId])
+  @@index([type])
+  @@index([year])
   @@map("content")
+}
+
+model SeriesDetails {
+  id        String  @id @default(uuid())
+  content   Content @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  contentId String  @unique @map("content_id")
+
+  seasonCount  Int?      @map("season_count")
+  episodeCount Int?      @map("episode_count")
+  status       String?
+  lastAirDate  DateTime? @map("last_air_date")
+
+  @@map("series_details")
+}
+
+model ListItem {
+  id        String  @id @default(uuid())
+  content   Content @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  contentId String  @unique @map("content_id")
+
+  addedBy       User   @relation("AddedBy", fields: [addedById], references: [id])
+  addedById     String @map("added_by_id")
+  requestedBy   User   @relation("RequestedBy", fields: [requestedById], references: [id])
+  requestedById String @map("requested_by_id")
+
+  status   Status   @default(WANT_TO_WATCH)
+  position Int      @unique
+  rating   Float?
+  addedAt  DateTime @default(now()) @map("added_at")
+
+  statusHistory StatusHistory[]
+
+  @@index([contentId])
+  @@index([addedById])
+  @@index([requestedById])
+  @@index([status])
+  @@index([position])
+  @@map("list_items")
+}
+
+model StatusHistory {
+  id         String   @id @default(uuid())
+  listItem   ListItem @relation(fields: [listItemId], references: [id], onDelete: Cascade)
+  listItemId String   @map("list_item_id")
+
+  fromStatus Status?  @map("from_status")
+  toStatus   Status   @map("to_status")
+  changedAt  DateTime @default(now()) @map("changed_at")
+
+  @@index([listItemId])
+  @@index([changedAt])
+  @@map("status_history")
 }
