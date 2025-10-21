@@ -30,8 +30,16 @@ COPY --from=deps /app/prisma ./prisma
 # Copy application code
 COPY . .
 
+# Accept build arguments for environment variables
+ARG JWT_SECRET
+ARG DATABASE_URL
+ARG TMDB_API_KEY
+
 # Build the application
 ENV NODE_ENV=production
+ENV JWT_SECRET=$JWT_SECRET
+ENV DATABASE_URL=$DATABASE_URL
+ENV TMDB_API_KEY=$TMDB_API_KEY
 RUN pnpm run build
 
 # Stage 3: Runner (Production)
