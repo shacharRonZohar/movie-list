@@ -174,7 +174,12 @@ export default defineProtectedEventHandler(async event => {
       (result): result is NonNullable<typeof result> => result !== null
     )
 
-    return [...localResults, ...validResults]
+    // Merge results with no duplicates
+    const mergedResults = [...localResults, ...validResults].filter(
+      (result, index, self) => index === self.findIndex(t => t.id === result.id)
+    )
+
+    return mergedResults
   } catch (error) {
     console.error('TMDB search error:', error)
     throw createError({
