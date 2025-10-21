@@ -51,7 +51,7 @@ const getErrorMessage = (error: unknown) => {
           <span
             class="text-3xl sm:text-4xl animate-pulse-soft"
             style="animation-delay: 0.5s"
-            >💕</span
+          >💕</span
           >
         </div>
         <p class="text-sm sm:text-base text-gray-600 px-4">

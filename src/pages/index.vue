@@ -140,7 +140,7 @@ definePageMeta({
           >
             <span>Meow Meow Meow Meow</span>
             <span class="group-hover:translate-x-1 transition-transform"
-              >❤️</span
+            >❤️</span
             >
           </NuxtLink>
 

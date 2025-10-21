@@ -1,3 +1,10 @@
+<script setup lang="ts">
+import { useToast } from '~/composables/useToast'
+import Toast from './Toast.vue'
+
+const { toasts, removeToast } = useToast()
+</script>
+
 <template>
   <div>
     <TransitionGroup name="list">
@@ -14,13 +21,6 @@
     </TransitionGroup>
   </div>
 </template>
-
-<script setup lang="ts">
-import { useToast } from '~/composables/useToast'
-import Toast from './Toast.vue'
-
-const { toasts, removeToast } = useToast()
-</script>
 
 <style scoped>
 .list-enter-active,

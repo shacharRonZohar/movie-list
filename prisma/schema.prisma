@@ -103,7 +103,7 @@ model ListItem {
   requestedById String @map("requested_by_id")
 
   status   Status   @default(WANT_TO_WATCH)
-  position Int      @unique
+  position Float    @unique
   rating   Float?
   addedAt  DateTime @default(now()) @map("added_at")
 

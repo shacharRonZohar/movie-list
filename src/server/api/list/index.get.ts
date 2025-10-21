@@ -31,4 +31,3 @@ export default defineProtectedEventHandler(async () => {
 
   return listItems
 })
-

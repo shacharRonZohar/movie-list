@@ -110,7 +110,7 @@ export const ListItemSchema = z.object({
   contentId: z.string(),
   addedById: z.string(),
   requestedById: z.string(),
-  position: z.number().int(),
+  position: z.number(),
   rating: z.number().nullable(),
   addedAt: z.coerce.date(),
 })
@@ -584,7 +584,7 @@ export const ListItemWhereInputSchema: z.ZodType<Prisma.ListItemWhereInput> = z.
   addedById: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   requestedById: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   status: z.union([ z.lazy(() => EnumStatusFilterSchema), z.lazy(() => StatusSchema) ]).optional(),
-  position: z.union([ z.lazy(() => IntFilterSchema), z.number() ]).optional(),
+  position: z.union([ z.lazy(() => FloatFilterSchema), z.number() ]).optional(),
   rating: z.union([ z.lazy(() => FloatNullableFilterSchema), z.number() ]).optional().nullable(),
   addedAt: z.union([ z.lazy(() => DateTimeFilterSchema), z.coerce.date() ]).optional(),
   content: z.union([ z.lazy(() => ContentScalarRelationFilterSchema), z.lazy(() => ContentWhereInputSchema) ]).optional(),
@@ -612,7 +612,7 @@ export const ListItemWhereUniqueInputSchema: z.ZodType<Prisma.ListItemWhereUniqu
   z.object({
     id: z.uuid(),
     contentId: z.string(),
-    position: z.number().int(),
+    position: z.number(),
   }),
   z.object({
     id: z.uuid(),
@@ -620,26 +620,26 @@ export const ListItemWhereUniqueInputSchema: z.ZodType<Prisma.ListItemWhereUniqu
   }),
   z.object({
     id: z.uuid(),
-    position: z.number().int(),
+    position: z.number(),
   }),
   z.object({
     id: z.uuid(),
   }),
   z.object({
     contentId: z.string(),
-    position: z.number().int(),
+    position: z.number(),
   }),
   z.object({
     contentId: z.string(),
   }),
   z.object({
-    position: z.number().int(),
+    position: z.number(),
   }),
 ])
 .and(z.strictObject({
   id: z.uuid().optional(),
   contentId: z.string().optional(),
-  position: z.number().int().optional(),
+  position: z.number().optional(),
   AND: z.union([ z.lazy(() => ListItemWhereInputSchema), z.lazy(() => ListItemWhereInputSchema).array() ]).optional(),
   OR: z.lazy(() => ListItemWhereInputSchema).array().optional(),
   NOT: z.union([ z.lazy(() => ListItemWhereInputSchema), z.lazy(() => ListItemWhereInputSchema).array() ]).optional(),
@@ -679,7 +679,7 @@ export const ListItemScalarWhereWithAggregatesInputSchema: z.ZodType<Prisma.List
   addedById: z.union([ z.lazy(() => StringWithAggregatesFilterSchema), z.string() ]).optional(),
   requestedById: z.union([ z.lazy(() => StringWithAggregatesFilterSchema), z.string() ]).optional(),
   status: z.union([ z.lazy(() => EnumStatusWithAggregatesFilterSchema), z.lazy(() => StatusSchema) ]).optional(),
-  position: z.union([ z.lazy(() => IntWithAggregatesFilterSchema), z.number() ]).optional(),
+  position: z.union([ z.lazy(() => FloatWithAggregatesFilterSchema), z.number() ]).optional(),
   rating: z.union([ z.lazy(() => FloatNullableWithAggregatesFilterSchema), z.number() ]).optional().nullable(),
   addedAt: z.union([ z.lazy(() => DateTimeWithAggregatesFilterSchema), z.coerce.date() ]).optional(),
 });
@@ -1026,7 +1026,7 @@ export const SeriesDetailsUncheckedUpdateManyInputSchema: z.ZodType<Prisma.Serie
 export const ListItemCreateInputSchema: z.ZodType<Prisma.ListItemCreateInput> = z.strictObject({
   id: z.uuid().optional(),
   status: z.lazy(() => StatusSchema).optional(),
-  position: z.number().int(),
+  position: z.number(),
   rating: z.number().optional().nullable(),
   addedAt: z.coerce.date().optional(),
   content: z.lazy(() => ContentCreateNestedOneWithoutListItemsInputSchema),
@@ -1041,7 +1041,7 @@ export const ListItemUncheckedCreateInputSchema: z.ZodType<Prisma.ListItemUnchec
   addedById: z.string(),
   requestedById: z.string(),
   status: z.lazy(() => StatusSchema).optional(),
-  position: z.number().int(),
+  position: z.number(),
   rating: z.number().optional().nullable(),
   addedAt: z.coerce.date().optional(),
   statusHistory: z.lazy(() => StatusHistoryUncheckedCreateNestedManyWithoutListItemInputSchema).optional(),
@@ -1050,7 +1050,7 @@ export const ListItemUncheckedCreateInputSchema: z.ZodType<Prisma.ListItemUnchec
 export const ListItemUpdateInputSchema: z.ZodType<Prisma.ListItemUpdateInput> = z.strictObject({
   id: z.union([ z.uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => StatusSchema), z.lazy(() => EnumStatusFieldUpdateOperationsInputSchema) ]).optional(),
-  position: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  position: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   rating: z.union([ z.number(),z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   addedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.lazy(() => ContentUpdateOneRequiredWithoutListItemsNestedInputSchema).optional(),
@@ -1065,7 +1065,7 @@ export const ListItemUncheckedUpdateInputSchema: z.ZodType<Prisma.ListItemUnchec
   addedById: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   requestedById: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => StatusSchema), z.lazy(() => EnumStatusFieldUpdateOperationsInputSchema) ]).optional(),
-  position: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  position: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   rating: z.union([ z.number(),z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   addedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   statusHistory: z.lazy(() => StatusHistoryUncheckedUpdateManyWithoutListItemNestedInputSchema).optional(),
@@ -1077,7 +1077,7 @@ export const ListItemCreateManyInputSchema: z.ZodType<Prisma.ListItemCreateManyI
   addedById: z.string(),
   requestedById: z.string(),
   status: z.lazy(() => StatusSchema).optional(),
-  position: z.number().int(),
+  position: z.number(),
   rating: z.number().optional().nullable(),
   addedAt: z.coerce.date().optional(),
 });
@@ -1085,7 +1085,7 @@ export const ListItemCreateManyInputSchema: z.ZodType<Prisma.ListItemCreateManyI
 export const ListItemUpdateManyMutationInputSchema: z.ZodType<Prisma.ListItemUpdateManyMutationInput> = z.strictObject({
   id: z.union([ z.uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => StatusSchema), z.lazy(() => EnumStatusFieldUpdateOperationsInputSchema) ]).optional(),
-  position: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  position: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   rating: z.union([ z.number(),z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   addedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 });
@@ -1096,7 +1096,7 @@ export const ListItemUncheckedUpdateManyInputSchema: z.ZodType<Prisma.ListItemUn
   addedById: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   requestedById: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => StatusSchema), z.lazy(() => EnumStatusFieldUpdateOperationsInputSchema) ]).optional(),
-  position: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  position: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   rating: z.union([ z.number(),z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   addedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 });
@@ -1542,6 +1542,17 @@ export const EnumStatusFilterSchema: z.ZodType<Prisma.EnumStatusFilter> = z.stri
   not: z.union([ z.lazy(() => StatusSchema), z.lazy(() => NestedEnumStatusFilterSchema) ]).optional(),
 });
 
+export const FloatFilterSchema: z.ZodType<Prisma.FloatFilter> = z.strictObject({
+  equals: z.number().optional(),
+  in: z.number().array().optional(),
+  notIn: z.number().array().optional(),
+  lt: z.number().optional(),
+  lte: z.number().optional(),
+  gt: z.number().optional(),
+  gte: z.number().optional(),
+  not: z.union([ z.number(),z.lazy(() => NestedFloatFilterSchema) ]).optional(),
+});
+
 export const FloatNullableFilterSchema: z.ZodType<Prisma.FloatNullableFilter> = z.strictObject({
   equals: z.number().optional().nullable(),
   in: z.number().array().optional().nullable(),
@@ -1619,6 +1630,22 @@ export const EnumStatusWithAggregatesFilterSchema: z.ZodType<Prisma.EnumStatusWi
   _count: z.lazy(() => NestedIntFilterSchema).optional(),
   _min: z.lazy(() => NestedEnumStatusFilterSchema).optional(),
   _max: z.lazy(() => NestedEnumStatusFilterSchema).optional(),
+});
+
+export const FloatWithAggregatesFilterSchema: z.ZodType<Prisma.FloatWithAggregatesFilter> = z.strictObject({
+  equals: z.number().optional(),
+  in: z.number().array().optional(),
+  notIn: z.number().array().optional(),
+  lt: z.number().optional(),
+  lte: z.number().optional(),
+  gt: z.number().optional(),
+  gte: z.number().optional(),
+  not: z.union([ z.number(),z.lazy(() => NestedFloatWithAggregatesFilterSchema) ]).optional(),
+  _count: z.lazy(() => NestedIntFilterSchema).optional(),
+  _avg: z.lazy(() => NestedFloatFilterSchema).optional(),
+  _sum: z.lazy(() => NestedFloatFilterSchema).optional(),
+  _min: z.lazy(() => NestedFloatFilterSchema).optional(),
+  _max: z.lazy(() => NestedFloatFilterSchema).optional(),
 });
 
 export const FloatNullableWithAggregatesFilterSchema: z.ZodType<Prisma.FloatNullableWithAggregatesFilter> = z.strictObject({
@@ -1928,6 +1955,14 @@ export const StatusHistoryUncheckedCreateNestedManyWithoutListItemInputSchema: z
 
 export const EnumStatusFieldUpdateOperationsInputSchema: z.ZodType<Prisma.EnumStatusFieldUpdateOperationsInput> = z.strictObject({
   set: z.lazy(() => StatusSchema).optional(),
+});
+
+export const FloatFieldUpdateOperationsInputSchema: z.ZodType<Prisma.FloatFieldUpdateOperationsInput> = z.strictObject({
+  set: z.number().optional(),
+  increment: z.number().optional(),
+  decrement: z.number().optional(),
+  multiply: z.number().optional(),
+  divide: z.number().optional(),
 });
 
 export const NullableFloatFieldUpdateOperationsInputSchema: z.ZodType<Prisma.NullableFloatFieldUpdateOperationsInput> = z.strictObject({
@@ -2247,6 +2282,22 @@ export const NestedEnumStatusWithAggregatesFilterSchema: z.ZodType<Prisma.Nested
   _max: z.lazy(() => NestedEnumStatusFilterSchema).optional(),
 });
 
+export const NestedFloatWithAggregatesFilterSchema: z.ZodType<Prisma.NestedFloatWithAggregatesFilter> = z.strictObject({
+  equals: z.number().optional(),
+  in: z.number().array().optional(),
+  notIn: z.number().array().optional(),
+  lt: z.number().optional(),
+  lte: z.number().optional(),
+  gt: z.number().optional(),
+  gte: z.number().optional(),
+  not: z.union([ z.number(),z.lazy(() => NestedFloatWithAggregatesFilterSchema) ]).optional(),
+  _count: z.lazy(() => NestedIntFilterSchema).optional(),
+  _avg: z.lazy(() => NestedFloatFilterSchema).optional(),
+  _sum: z.lazy(() => NestedFloatFilterSchema).optional(),
+  _min: z.lazy(() => NestedFloatFilterSchema).optional(),
+  _max: z.lazy(() => NestedFloatFilterSchema).optional(),
+});
+
 export const NestedFloatNullableWithAggregatesFilterSchema: z.ZodType<Prisma.NestedFloatNullableWithAggregatesFilter> = z.strictObject({
   equals: z.number().optional().nullable(),
   in: z.number().array().optional().nullable(),
@@ -2283,7 +2334,7 @@ export const NestedEnumStatusNullableWithAggregatesFilterSchema: z.ZodType<Prism
 export const ListItemCreateWithoutAddedByInputSchema: z.ZodType<Prisma.ListItemCreateWithoutAddedByInput> = z.strictObject({
   id: z.uuid().optional(),
   status: z.lazy(() => StatusSchema).optional(),
-  position: z.number().int(),
+  position: z.number(),
   rating: z.number().optional().nullable(),
   addedAt: z.coerce.date().optional(),
   content: z.lazy(() => ContentCreateNestedOneWithoutListItemsInputSchema),
@@ -2296,7 +2347,7 @@ export const ListItemUncheckedCreateWithoutAddedByInputSchema: z.ZodType<Prisma.
   contentId: z.string(),
   requestedById: z.string(),
   status: z.lazy(() => StatusSchema).optional(),
-  position: z.number().int(),
+  position: z.number(),
   rating: z.number().optional().nullable(),
   addedAt: z.coerce.date().optional(),
   statusHistory: z.lazy(() => StatusHistoryUncheckedCreateNestedManyWithoutListItemInputSchema).optional(),
@@ -2315,7 +2366,7 @@ export const ListItemCreateManyAddedByInputEnvelopeSchema: z.ZodType<Prisma.List
 export const ListItemCreateWithoutRequestedByInputSchema: z.ZodType<Prisma.ListItemCreateWithoutRequestedByInput> = z.strictObject({
   id: z.uuid().optional(),
   status: z.lazy(() => StatusSchema).optional(),
-  position: z.number().int(),
+  position: z.number(),
   rating: z.number().optional().nullable(),
   addedAt: z.coerce.date().optional(),
   content: z.lazy(() => ContentCreateNestedOneWithoutListItemsInputSchema),
@@ -2328,7 +2379,7 @@ export const ListItemUncheckedCreateWithoutRequestedByInputSchema: z.ZodType<Pri
   contentId: z.string(),
   addedById: z.string(),
   status: z.lazy(() => StatusSchema).optional(),
-  position: z.number().int(),
+  position: z.number(),
   rating: z.number().optional().nullable(),
   addedAt: z.coerce.date().optional(),
   statusHistory: z.lazy(() => StatusHistoryUncheckedCreateNestedManyWithoutListItemInputSchema).optional(),
@@ -2369,7 +2420,7 @@ export const ListItemScalarWhereInputSchema: z.ZodType<Prisma.ListItemScalarWher
   addedById: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   requestedById: z.union([ z.lazy(() => StringFilterSchema), z.string() ]).optional(),
   status: z.union([ z.lazy(() => EnumStatusFilterSchema), z.lazy(() => StatusSchema) ]).optional(),
-  position: z.union([ z.lazy(() => IntFilterSchema), z.number() ]).optional(),
+  position: z.union([ z.lazy(() => FloatFilterSchema), z.number() ]).optional(),
   rating: z.union([ z.lazy(() => FloatNullableFilterSchema), z.number() ]).optional().nullable(),
   addedAt: z.union([ z.lazy(() => DateTimeFilterSchema), z.coerce.date() ]).optional(),
 });
@@ -2414,7 +2465,7 @@ export const SeriesDetailsCreateOrConnectWithoutContentInputSchema: z.ZodType<Pr
 export const ListItemCreateWithoutContentInputSchema: z.ZodType<Prisma.ListItemCreateWithoutContentInput> = z.strictObject({
   id: z.uuid().optional(),
   status: z.lazy(() => StatusSchema).optional(),
-  position: z.number().int(),
+  position: z.number(),
   rating: z.number().optional().nullable(),
   addedAt: z.coerce.date().optional(),
   addedBy: z.lazy(() => UserCreateNestedOneWithoutAddedListItemsInputSchema),
@@ -2427,7 +2478,7 @@ export const ListItemUncheckedCreateWithoutContentInputSchema: z.ZodType<Prisma.
   addedById: z.string(),
   requestedById: z.string(),
   status: z.lazy(() => StatusSchema).optional(),
-  position: z.number().int(),
+  position: z.number(),
   rating: z.number().optional().nullable(),
   addedAt: z.coerce.date().optional(),
   statusHistory: z.lazy(() => StatusHistoryUncheckedCreateNestedManyWithoutListItemInputSchema).optional(),
@@ -2479,7 +2530,7 @@ export const ListItemUpdateToOneWithWhereWithoutContentInputSchema: z.ZodType<Pr
 export const ListItemUpdateWithoutContentInputSchema: z.ZodType<Prisma.ListItemUpdateWithoutContentInput> = z.strictObject({
   id: z.union([ z.uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => StatusSchema), z.lazy(() => EnumStatusFieldUpdateOperationsInputSchema) ]).optional(),
-  position: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  position: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   rating: z.union([ z.number(),z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   addedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   addedBy: z.lazy(() => UserUpdateOneRequiredWithoutAddedListItemsNestedInputSchema).optional(),
@@ -2492,7 +2543,7 @@ export const ListItemUncheckedUpdateWithoutContentInputSchema: z.ZodType<Prisma.
   addedById: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   requestedById: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => StatusSchema), z.lazy(() => EnumStatusFieldUpdateOperationsInputSchema) ]).optional(),
-  position: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  position: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   rating: z.union([ z.number(),z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   addedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   statusHistory: z.lazy(() => StatusHistoryUncheckedUpdateManyWithoutListItemNestedInputSchema).optional(),
@@ -2864,7 +2915,7 @@ export const StatusHistoryScalarWhereInputSchema: z.ZodType<Prisma.StatusHistory
 export const ListItemCreateWithoutStatusHistoryInputSchema: z.ZodType<Prisma.ListItemCreateWithoutStatusHistoryInput> = z.strictObject({
   id: z.uuid().optional(),
   status: z.lazy(() => StatusSchema).optional(),
-  position: z.number().int(),
+  position: z.number(),
   rating: z.number().optional().nullable(),
   addedAt: z.coerce.date().optional(),
   content: z.lazy(() => ContentCreateNestedOneWithoutListItemsInputSchema),
@@ -2878,7 +2929,7 @@ export const ListItemUncheckedCreateWithoutStatusHistoryInputSchema: z.ZodType<P
   addedById: z.string(),
   requestedById: z.string(),
   status: z.lazy(() => StatusSchema).optional(),
-  position: z.number().int(),
+  position: z.number(),
   rating: z.number().optional().nullable(),
   addedAt: z.coerce.date().optional(),
 });
@@ -2902,7 +2953,7 @@ export const ListItemUpdateToOneWithWhereWithoutStatusHistoryInputSchema: z.ZodT
 export const ListItemUpdateWithoutStatusHistoryInputSchema: z.ZodType<Prisma.ListItemUpdateWithoutStatusHistoryInput> = z.strictObject({
   id: z.union([ z.uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => StatusSchema), z.lazy(() => EnumStatusFieldUpdateOperationsInputSchema) ]).optional(),
-  position: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  position: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   rating: z.union([ z.number(),z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   addedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.lazy(() => ContentUpdateOneRequiredWithoutListItemsNestedInputSchema).optional(),
@@ -2916,7 +2967,7 @@ export const ListItemUncheckedUpdateWithoutStatusHistoryInputSchema: z.ZodType<P
   addedById: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   requestedById: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => StatusSchema), z.lazy(() => EnumStatusFieldUpdateOperationsInputSchema) ]).optional(),
-  position: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  position: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   rating: z.union([ z.number(),z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   addedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 });
@@ -2926,7 +2977,7 @@ export const ListItemCreateManyAddedByInputSchema: z.ZodType<Prisma.ListItemCrea
   contentId: z.string(),
   requestedById: z.string(),
   status: z.lazy(() => StatusSchema).optional(),
-  position: z.number().int(),
+  position: z.number(),
   rating: z.number().optional().nullable(),
   addedAt: z.coerce.date().optional(),
 });
@@ -2936,7 +2987,7 @@ export const ListItemCreateManyRequestedByInputSchema: z.ZodType<Prisma.ListItem
   contentId: z.string(),
   addedById: z.string(),
   status: z.lazy(() => StatusSchema).optional(),
-  position: z.number().int(),
+  position: z.number(),
   rating: z.number().optional().nullable(),
   addedAt: z.coerce.date().optional(),
 });
@@ -2944,7 +2995,7 @@ export const ListItemCreateManyRequestedByInputSchema: z.ZodType<Prisma.ListItem
 export const ListItemUpdateWithoutAddedByInputSchema: z.ZodType<Prisma.ListItemUpdateWithoutAddedByInput> = z.strictObject({
   id: z.union([ z.uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => StatusSchema), z.lazy(() => EnumStatusFieldUpdateOperationsInputSchema) ]).optional(),
-  position: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  position: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   rating: z.union([ z.number(),z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   addedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.lazy(() => ContentUpdateOneRequiredWithoutListItemsNestedInputSchema).optional(),
@@ -2957,7 +3008,7 @@ export const ListItemUncheckedUpdateWithoutAddedByInputSchema: z.ZodType<Prisma.
   contentId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   requestedById: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => StatusSchema), z.lazy(() => EnumStatusFieldUpdateOperationsInputSchema) ]).optional(),
-  position: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  position: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   rating: z.union([ z.number(),z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   addedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   statusHistory: z.lazy(() => StatusHistoryUncheckedUpdateManyWithoutListItemNestedInputSchema).optional(),
@@ -2968,7 +3019,7 @@ export const ListItemUncheckedUpdateManyWithoutAddedByInputSchema: z.ZodType<Pri
   contentId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   requestedById: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => StatusSchema), z.lazy(() => EnumStatusFieldUpdateOperationsInputSchema) ]).optional(),
-  position: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  position: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   rating: z.union([ z.number(),z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   addedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 });
@@ -2976,7 +3027,7 @@ export const ListItemUncheckedUpdateManyWithoutAddedByInputSchema: z.ZodType<Pri
 export const ListItemUpdateWithoutRequestedByInputSchema: z.ZodType<Prisma.ListItemUpdateWithoutRequestedByInput> = z.strictObject({
   id: z.union([ z.uuid(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => StatusSchema), z.lazy(() => EnumStatusFieldUpdateOperationsInputSchema) ]).optional(),
-  position: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  position: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   rating: z.union([ z.number(),z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   addedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   content: z.lazy(() => ContentUpdateOneRequiredWithoutListItemsNestedInputSchema).optional(),
@@ -2989,7 +3040,7 @@ export const ListItemUncheckedUpdateWithoutRequestedByInputSchema: z.ZodType<Pri
   contentId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   addedById: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => StatusSchema), z.lazy(() => EnumStatusFieldUpdateOperationsInputSchema) ]).optional(),
-  position: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  position: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   rating: z.union([ z.number(),z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   addedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
   statusHistory: z.lazy(() => StatusHistoryUncheckedUpdateManyWithoutListItemNestedInputSchema).optional(),
@@ -3000,7 +3051,7 @@ export const ListItemUncheckedUpdateManyWithoutRequestedByInputSchema: z.ZodType
   contentId: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   addedById: z.union([ z.string(),z.lazy(() => StringFieldUpdateOperationsInputSchema) ]).optional(),
   status: z.union([ z.lazy(() => StatusSchema), z.lazy(() => EnumStatusFieldUpdateOperationsInputSchema) ]).optional(),
-  position: z.union([ z.number().int(),z.lazy(() => IntFieldUpdateOperationsInputSchema) ]).optional(),
+  position: z.union([ z.number(),z.lazy(() => FloatFieldUpdateOperationsInputSchema) ]).optional(),
   rating: z.union([ z.number(),z.lazy(() => NullableFloatFieldUpdateOperationsInputSchema) ]).optional().nullable(),
   addedAt: z.union([ z.coerce.date(),z.lazy(() => DateTimeFieldUpdateOperationsInputSchema) ]).optional(),
 });

@@ -9,13 +9,13 @@ import { StatusSchema } from '~/server/utils/zod'
 
 const updateListItemSchema = z.object({
   status: StatusSchema.optional(),
-  position: z.number().int().positive().optional(),
+  position: z.number().positive().optional(),
   rating: z.number().min(0).max(10).nullable().optional(),
 })
 
 export default defineProtectedEventHandler(async event => {
   const id = getRouterParam(event, 'id')
-  
+
   if (!id) {
     throw createError({
       statusCode: 400,
@@ -48,56 +48,9 @@ export default defineProtectedEventHandler(async event => {
     })
   }
 
-  // Use transaction for position changes and status history
+  // Use transaction for status history
   const updatedItem = await prisma.$transaction(async tx => {
-    // Handle position change if provided
-    if (position !== undefined && position !== existingItem.position) {
-      const allItems = await tx.listItem.findMany({
-        orderBy: { position: 'asc' },
-        select: { id: true, position: true },
-      })
-
-      const oldPosition = existingItem.position
-      const newPosition = position
-
-      if (newPosition > allItems.length) {
-        throw createError({
-          statusCode: 400,
-          message: 'Position out of range',
-        })
-      }
-
-      // Move item down (increasing position)
-      if (newPosition > oldPosition) {
-        await tx.listItem.updateMany({
-          where: {
-            position: {
-              gt: oldPosition,
-              lte: newPosition,
-            },
-          },
-          data: {
-            position: { decrement: 1 },
-          },
-        })
-      }
-      // Move item up (decreasing position)
-      else if (newPosition < oldPosition) {
-        await tx.listItem.updateMany({
-          where: {
-            position: {
-              gte: newPosition,
-              lt: oldPosition,
-            },
-          },
-          data: {
-            position: { increment: 1 },
-          },
-        })
-      }
-    }
-
-    // Update the list item
+    // Update the list item - with fractional indexing, we just update this one item
     const updated = await tx.listItem.update({
       where: { id },
       data: {
@@ -140,4 +93,3 @@ export default defineProtectedEventHandler(async event => {
 
   return updatedItem
 })
-

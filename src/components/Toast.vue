@@ -1,3 +1,56 @@
+<script setup lang="ts">
+interface Props {
+  message: string
+  type?: 'success' | 'error' | 'warning' | 'info'
+  position?: 'top-right' | 'top-center' | 'bottom-right' | 'bottom-center'
+  duration?: number
+  closable?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  type: 'info',
+  position: 'top-right',
+  duration: 3000,
+  closable: true,
+})
+
+const emit = defineEmits<{
+  close: []
+}>()
+
+const visible = ref(true)
+
+const typeClasses = {
+  success:
+    'bg-status-cherished/10 text-love-deep-rose border border-love-gold/30 backdrop-blur-sm',
+  error:
+    'bg-love-coral/10 text-love-deep-rose border border-love-coral/30 backdrop-blur-sm',
+  warning:
+    'bg-love-peach/20 text-love-deep-rose border border-love-coral/30 backdrop-blur-sm',
+  info: 'bg-love-lavender/10 text-love-deep-rose border border-love-lavender/30 backdrop-blur-sm',
+} as const
+
+const positionClasses = {
+  'top-right': 'top-4 right-4',
+  'top-center': 'top-4 left-1/2 -translate-x-1/2',
+  'bottom-right': 'bottom-4 right-4',
+  'bottom-center': 'bottom-4 left-1/2 -translate-x-1/2',
+} as const
+
+const close = () => {
+  visible.value = false
+  emit('close')
+}
+
+onMounted(() => {
+  if (props.duration > 0) {
+    setTimeout(() => {
+      close()
+    }, props.duration)
+  }
+})
+</script>
+
 <template>
   <Transition name="toast">
     <div
@@ -77,8 +130,8 @@
       <!-- Close button -->
       <button
         v-if="closable"
-        @click="close"
         class="flex-shrink-0 hover:opacity-75 transition-opacity"
+        @click="close"
       >
         <svg
           class="w-5 h-5"
@@ -97,59 +150,6 @@
     </div>
   </Transition>
 </template>
-
-<script setup lang="ts">
-interface Props {
-  message: string
-  type?: 'success' | 'error' | 'warning' | 'info'
-  position?: 'top-right' | 'top-center' | 'bottom-right' | 'bottom-center'
-  duration?: number
-  closable?: boolean
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  type: 'info',
-  position: 'top-right',
-  duration: 3000,
-  closable: true,
-})
-
-const emit = defineEmits<{
-  close: []
-}>()
-
-const visible = ref(true)
-
-const typeClasses = {
-  success:
-    'bg-status-cherished/10 text-love-deep-rose border border-love-gold/30 backdrop-blur-sm',
-  error:
-    'bg-love-coral/10 text-love-deep-rose border border-love-coral/30 backdrop-blur-sm',
-  warning:
-    'bg-love-peach/20 text-love-deep-rose border border-love-coral/30 backdrop-blur-sm',
-  info: 'bg-love-lavender/10 text-love-deep-rose border border-love-lavender/30 backdrop-blur-sm',
-} as const
-
-const positionClasses = {
-  'top-right': 'top-4 right-4',
-  'top-center': 'top-4 left-1/2 -translate-x-1/2',
-  'bottom-right': 'bottom-4 right-4',
-  'bottom-center': 'bottom-4 left-1/2 -translate-x-1/2',
-} as const
-
-const close = () => {
-  visible.value = false
-  emit('close')
-}
-
-onMounted(() => {
-  if (props.duration > 0) {
-    setTimeout(() => {
-      close()
-    }, props.duration)
-  }
-})
-</script>
 
 <style scoped>
 .toast-enter-active,

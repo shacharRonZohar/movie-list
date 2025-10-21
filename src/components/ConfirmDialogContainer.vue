@@ -1,3 +1,10 @@
+<script setup lang="ts">
+import { useConfirm } from '~/composables/useConfirm'
+import ConfirmDialog from './ConfirmDialog.vue'
+
+const { confirmState, handleConfirm, handleCancel, handleClose } = useConfirm()
+</script>
+
 <template>
   <ConfirmDialog
     :is-open="confirmState.isOpen"
@@ -12,10 +19,3 @@
     @close="handleClose"
   />
 </template>
-
-<script setup lang="ts">
-import { useConfirm } from '~/composables/useConfirm'
-import ConfirmDialog from './ConfirmDialog.vue'
-
-const { confirmState, handleConfirm, handleCancel, handleClose } = useConfirm()
-</script>

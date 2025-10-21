@@ -1,7 +1,3 @@
-<template>
-  <div :class="['skeleton', customClass]" :style="style"></div>
-</template>
-
 <script setup lang="ts">
 interface Props {
   width?: string
@@ -20,3 +16,7 @@ const style = computed(() => ({
   height: props.height,
 }))
 </script>
+
+<template>
+  <div :class="['skeleton', customClass]" :style="style"></div>
+</template>

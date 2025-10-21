@@ -1,27 +1,3 @@
-<template>
-  <div class="relative inline-block" @mouseenter="show" @mouseleave="hide">
-    <slot />
-    <Transition name="tooltip">
-      <div
-        v-if="isVisible"
-        :class="[
-          'absolute z-50 px-2 py-1 text-xs text-white bg-gray-900 rounded shadow-lg whitespace-nowrap pointer-events-none',
-          positionClasses[position],
-        ]"
-        role="tooltip"
-      >
-        {{ text }}
-        <div
-          :class="[
-            'absolute w-2 h-2 bg-gray-900 transform rotate-45',
-            arrowClasses[position],
-          ]"
-        ></div>
-      </div>
-    </Transition>
-  </div>
-</template>
-
 <script setup lang="ts">
 interface Props {
   text: string
@@ -71,6 +47,30 @@ onUnmounted(() => {
   }
 })
 </script>
+
+<template>
+  <div class="relative inline-block" @mouseenter="show" @mouseleave="hide">
+    <slot ></slot>
+    <Transition name="tooltip">
+      <div
+        v-if="isVisible"
+        :class="[
+          'absolute z-50 px-2 py-1 text-xs text-white bg-gray-900 rounded shadow-lg whitespace-nowrap pointer-events-none',
+          positionClasses[position],
+        ]"
+        role="tooltip"
+      >
+        {{ text }}
+        <div
+          :class="[
+            'absolute w-2 h-2 bg-gray-900 transform rotate-45',
+            arrowClasses[position],
+          ]"
+        ></div>
+      </div>
+    </Transition>
+  </div>
+</template>
 
 <style scoped>
 .tooltip-enter-active,

@@ -61,7 +61,7 @@ const handleLogout = async () => {
               <span class="hidden lg:inline">Welcome back, </span>
               <strong
                 class="text-love-rose truncate max-w-[80px] sm:max-w-none inline-block align-bottom"
-                >{{ user.displayName }}</strong
+              >{{ user.displayName }}</strong
               >
               <span class="ml-0.5 sm:ml-1">💖</span>
             </span>

@@ -1,16 +1,3 @@
-<template>
-  <div :class="['flex items-center justify-center', containerClass]">
-    <div
-      :class="[
-        'animate-spin rounded-full border-b-2',
-        sizeClasses[size],
-        colorClasses[color],
-      ]"
-    ></div>
-    <span v-if="text" :class="['ml-3', textSizeClasses[size]]">{{ text }}</span>
-  </div>
-</template>
-
 <script setup lang="ts">
 interface Props {
   size?: 'sm' | 'md' | 'lg'
@@ -44,3 +31,16 @@ const textSizeClasses = {
   lg: 'text-lg',
 } as const
 </script>
+
+<template>
+  <div :class="['flex items-center justify-center', containerClass]">
+    <div
+      :class="[
+        'animate-spin rounded-full border-b-2',
+        sizeClasses[size],
+        colorClasses[color],
+      ]"
+    ></div>
+    <span v-if="text" :class="['ml-3', textSizeClasses[size]]">{{ text }}</span>
+  </div>
+</template>

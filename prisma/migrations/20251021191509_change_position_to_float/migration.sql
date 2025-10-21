@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "list_items" ALTER COLUMN "position" SET DATA TYPE DOUBLE PRECISION;
