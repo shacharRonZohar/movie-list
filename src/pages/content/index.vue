@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useQuery } from '@tanstack/vue-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
+import { useToast } from '~/composables/useToast'
 
 defineOptions({
   name: 'ContentPage',
@@ -12,6 +13,8 @@ definePageMeta({
 })
 
 const showAddModal = ref(false)
+const toast = useToast()
+const queryClient = useQueryClient()
 
 const {
   data: listItems,
@@ -24,6 +27,14 @@ const {
     return response
   },
 })
+
+const statusOptions = [
+  { value: 'WANT_TO_WATCH', label: 'Plan to Watch 🎬' },
+  { value: 'WATCHING', label: 'Currently Watching 📺' },
+  { value: 'WATCHED', label: 'Completed ✓' },
+  { value: 'ON_HOLD', label: 'On Hold ⏸️' },
+  { value: 'DROPPED', label: 'Dropped 💫' },
+] as const
 
 const getStatusLabel = (status: string) => {
   const labels = {
@@ -47,6 +58,29 @@ const getStatusColor = (status: string) => {
   } as const
 
   return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800'
+}
+
+const updateStatusMutation = useMutation({
+  mutationFn: async (data: { id: string; status: string }) => {
+    const result = await $fetch(`/api/list/${data.id}`, {
+      method: 'PATCH',
+      body: { status: data.status },
+    })
+    return result
+  },
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['list'] })
+    toast.success('Status updated! ✨')
+  },
+  onError: error => {
+    toast.error(
+      `Failed to update status: ${error instanceof Error ? error.message : 'Unknown error'}`
+    )
+  },
+})
+
+const handleStatusChange = (itemId: string, newStatus: string) => {
+  updateStatusMutation.mutate({ id: itemId, status: newStatus })
 }
 </script>
 
@@ -72,13 +106,24 @@ const getStatusColor = (status: string) => {
           :key="i"
           class="card-hover p-4 sm:p-6 animate-pulse"
         >
-          <div
-            class="h-5 sm:h-6 bg-love-blush/30 rounded w-1/2 sm:w-1/3 mb-3 sm:mb-4"
-          ></div>
-          <div
-            class="h-3 sm:h-4 bg-love-blush/20 rounded w-3/4 sm:w-2/3 mb-2"
-          ></div>
-          <div class="h-3 sm:h-4 bg-love-blush/20 rounded w-2/3 sm:w-1/2"></div>
+          <div class="flex gap-4 sm:gap-6">
+            <!-- Skeleton Poster -->
+            <div
+              class="flex-shrink-0 w-20 h-28 sm:w-32 sm:h-48 bg-love-blush/30 rounded-lg"
+            ></div>
+            <!-- Skeleton Content -->
+            <div class="flex-1 min-w-0 space-y-3">
+              <div
+                class="h-5 sm:h-6 bg-love-blush/30 rounded w-1/2 sm:w-1/3"
+              ></div>
+              <div
+                class="h-3 sm:h-4 bg-love-blush/20 rounded w-3/4 sm:w-2/3"
+              ></div>
+              <div
+                class="h-3 sm:h-4 bg-love-blush/20 rounded w-2/3 sm:w-1/2"
+              ></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -132,57 +177,93 @@ const getStatusColor = (status: string) => {
           :key="item.id"
           class="card-hover p-4 sm:p-6 group"
         >
-          <div class="flex items-start justify-between gap-3 sm:gap-4">
-            <div class="flex-1 min-w-0">
-              <h3
-                class="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 mb-2 group-hover:text-love-rose transition-colors break-words"
-              >
-                {{ item.content.title }}
-              </h3>
-              <p
-                v-if="item.content.tagline"
-                class="text-sm text-gray-500 italic mb-3"
-              >
-                "{{ item.content.tagline }}"
-              </p>
-              <p
-                v-if="item.content.overview"
-                class="text-sm text-gray-600 mb-3 line-clamp-2"
-              >
-                {{ item.content.overview }}
-              </p>
+          <div class="flex gap-4 sm:gap-6">
+            <!-- Poster Image -->
+            <div class="flex-shrink-0 w-20 h-28 sm:w-32 sm:h-48">
+              <img
+                v-if="item.content.posterPath"
+                :src="`https://image.tmdb.org/t/p/w342${item.content.posterPath}`"
+                :alt="item.content.title"
+                class="w-full h-full object-cover rounded-lg shadow-lg group-hover:shadow-xl transition-shadow"
+              />
               <div
-                class="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 sm:gap-3 text-xs sm:text-sm"
+                v-else
+                class="w-full h-full bg-gradient-to-br from-love-blush to-love-lavender rounded-lg flex items-center justify-center shadow-lg"
               >
-                <span
-                  :class="getStatusColor(item.status)"
-                  class="px-2.5 sm:px-3 py-1 rounded-full font-medium inline-block w-fit"
+                <span class="text-3xl sm:text-5xl">
+                  {{ item.content.type === 'SERIES' ? '📺' : '🎬' }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Content Info -->
+            <div class="flex-1 min-w-0 flex flex-col gap-3">
+              <div>
+                <h3
+                  class="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 group-hover:text-love-rose transition-colors break-words"
                 >
-                  {{ getStatusLabel(item.status) }}
-                </span>
-                <span v-if="item.content.year" class="text-gray-500">
-                  {{ item.content.year }}
-                </span>
-                <span
-                  v-if="item.content.runtime"
-                  class="text-gray-500 hidden sm:inline"
+                  {{ item.content.title }}
+                  <span
+                    v-if="item.content.type === 'SERIES'"
+                    class="text-love-lavender text-base sm:text-xl"
+                  >
+                    📺
+                  </span>
+                  <span v-else class="text-love-coral text-base sm:text-xl">
+                    🎬
+                  </span>
+                </h3>
+                <div
+                  class="flex flex-wrap items-center gap-2 mt-1 text-xs sm:text-sm text-gray-500"
                 >
-                  {{ item.content.runtime }}min
-                </span>
-                <span
-                  v-if="item.content.genres.length > 0"
-                  class="text-gray-500"
+                  <span v-if="item.content.year">{{ item.content.year }}</span>
+                  <span
+                    v-if="item.content.year && item.content.genres.length > 0"
+                    >•</span
+                  >
+                  <span v-if="item.content.genres.length > 0">
+                    {{ item.content.genres.slice(0, 2).join(', ') }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Status Selector -->
+              <div class="flex items-center gap-2">
+                <label
+                  :for="`status-${item.id}`"
+                  class="text-xs sm:text-sm text-gray-600"
                 >
-                  {{ item.content.genres.slice(0, 2).join(', ') }}
-                </span>
-                <span class="text-gray-400 hidden sm:inline">•</span>
-                <span class="text-gray-500 break-words">
-                  Requested by {{ item.requestedBy.displayName }}
-                </span>
-                <span class="text-gray-400 hidden sm:inline">•</span>
-                <span class="text-gray-400">
-                  Added {{ new Date(item.addedAt).toLocaleDateString() }}
-                </span>
+                  Status:
+                </label>
+                <select
+                  :id="`status-${item.id}`"
+                  :value="item.status"
+                  class="text-xs sm:text-sm px-2 py-1 rounded-lg border-2 transition-all cursor-pointer"
+                  :class="[
+                    getStatusColor(item.status),
+                    'border-transparent hover:border-love-rose/30 focus:border-love-rose focus:outline-none',
+                  ]"
+                  :disabled="updateStatusMutation.isPending.value"
+                  @change="
+                    handleStatusChange(
+                      item.id,
+                      ($event.target as HTMLSelectElement).value
+                    )
+                  "
+                >
+                  <option
+                    v-for="option in statusOptions"
+                    :key="option.value"
+                    :value="option.value"
+                  >
+                    {{ option.label }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Requested By -->
+              <div class="text-xs text-gray-400">
+                Requested by {{ item.requestedBy.displayName }}
               </div>
             </div>
           </div>
