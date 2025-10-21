@@ -40,6 +40,10 @@ export default defineNuxtConfig({
   nitro: {
     compressPublicAssets: true,
     minify: true,
+    // Trust proxy headers (for Railway/production environments)
+    experimental: {
+      asyncContext: true,
+    },
     routeRules: {
       // Cache static assets
       '/_nuxt/**': {

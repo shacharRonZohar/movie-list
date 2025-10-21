@@ -65,12 +65,15 @@ export function getUserFromToken(event: H3Event) {
  * Set authentication cookie
  */
 export function setAuthCookie(event: H3Event, token: string) {
+  const isProduction = process.env.NODE_ENV === 'production'
+  
   setCookie(event, 'auth_token', token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure: isProduction,
+    sameSite: isProduction ? 'strict' : 'lax',
     maxAge: 60 * 60 * 24 * 7, // 7 days
     path: '/',
+    // Don't set domain - let browser handle it automatically
   })
 }
 
@@ -79,6 +82,9 @@ export function setAuthCookie(event: H3Event, token: string) {
  */
 export function clearAuthCookie(event: H3Event) {
   deleteCookie(event, 'auth_token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
     path: '/',
   })
 }
