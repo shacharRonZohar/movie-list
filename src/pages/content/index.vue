@@ -14,13 +14,13 @@ definePageMeta({
 const showAddModal = ref(false)
 
 const {
-  data: content,
+  data: listItems,
   isLoading,
   error,
 } = useQuery({
-  queryKey: ['content'],
+  queryKey: ['list'],
   queryFn: async () => {
-    const response = await $fetch('/api/content')
+    const response = await $fetch('/api/list')
     return response
   },
 })
@@ -95,7 +95,7 @@ const getStatusColor = (status: string) => {
 
       <!-- Empty State -->
       <div
-        v-else-if="!content || content.length === 0"
+        v-else-if="!listItems || listItems.length === 0"
         class="card-hover p-8 sm:p-12 text-center"
       >
         <div class="text-6xl sm:text-7xl md:text-8xl mb-4 sm:mb-6">🐶</div>
@@ -128,17 +128,29 @@ const getStatusColor = (status: string) => {
           </button>
         </div>
         <div
-          v-for="item in content"
+          v-for="item in listItems"
           :key="item.id"
           class="card-hover p-4 sm:p-6 group"
         >
           <div class="flex items-start justify-between gap-3 sm:gap-4">
             <div class="flex-1 min-w-0">
               <h3
-                class="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 mb-3 sm:mb-4 group-hover:text-love-rose transition-colors break-words"
+                class="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 mb-2 group-hover:text-love-rose transition-colors break-words"
               >
-                {{ item.title }}
+                {{ item.content.title }}
               </h3>
+              <p
+                v-if="item.content.tagline"
+                class="text-sm text-gray-500 italic mb-3"
+              >
+                "{{ item.content.tagline }}"
+              </p>
+              <p
+                v-if="item.content.overview"
+                class="text-sm text-gray-600 mb-3 line-clamp-2"
+              >
+                {{ item.content.overview }}
+              </p>
               <div
                 class="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 sm:gap-3 text-xs sm:text-sm"
               >
@@ -148,12 +160,28 @@ const getStatusColor = (status: string) => {
                 >
                   {{ getStatusLabel(item.status) }}
                 </span>
+                <span v-if="item.content.year" class="text-gray-500">
+                  {{ item.content.year }}
+                </span>
+                <span
+                  v-if="item.content.runtime"
+                  class="text-gray-500 hidden sm:inline"
+                >
+                  {{ item.content.runtime }}min
+                </span>
+                <span
+                  v-if="item.content.genres.length > 0"
+                  class="text-gray-500"
+                >
+                  {{ item.content.genres.slice(0, 2).join(', ') }}
+                </span>
+                <span class="text-gray-400 hidden sm:inline">•</span>
                 <span class="text-gray-500 break-words">
                   Requested by {{ item.requestedBy.displayName }}
                 </span>
                 <span class="text-gray-400 hidden sm:inline">•</span>
                 <span class="text-gray-400">
-                  Added {{ new Date(item.createdAt).toLocaleDateString() }}
+                  Added {{ new Date(item.addedAt).toLocaleDateString() }}
                 </span>
               </div>
             </div>

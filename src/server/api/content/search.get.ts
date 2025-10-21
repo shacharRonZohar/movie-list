@@ -56,7 +56,7 @@ export default defineProtectedEventHandler(async event => {
   })
 
   // If we have local results, return them
-  if (localResults.length > 0) {
+  if (localResults.length > 10) {
     return localResults
   }
 
@@ -70,7 +70,7 @@ export default defineProtectedEventHandler(async event => {
 
     // Step 3: Cache TMDB results in database
     const cachedResults = await Promise.all(
-      tmdbResults.results.slice(0, 50).map(async movie => {
+      tmdbResults.results.slice(0, 10).map(async movie => {
         try {
           // Get full movie details for better data
           const movieDetails = await getMovieDetails(movie.id)

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/composables/useToast'
 
@@ -14,10 +14,14 @@ const emit = defineEmits<{
 const toast = useToast()
 const queryClient = useQueryClient()
 
-const title = ref('')
+const searchQuery = ref('')
+const selectedContentId = ref<string | null>(null)
 const status = ref('WANT_TO_WATCH')
 const requestedById = ref('')
 const position = ref<number | undefined>(undefined)
+const isSearching = ref(false)
+const searchResults = ref<any[]>([])
+const searchInputRef = ref<HTMLInputElement | null>(null)
 
 // Fetch users
 const { data: usersData, isLoading: isLoadingUsers } = useQuery({
@@ -28,11 +32,11 @@ const { data: usersData, isLoading: isLoadingUsers } = useQuery({
   },
 })
 
-// Fetch content count for position options
-const { data: contentData } = useQuery({
-  queryKey: ['content'],
+// Fetch list count for position options
+const { data: listData } = useQuery({
+  queryKey: ['list'],
   queryFn: async () => {
-    const response = await $fetch('/api/content')
+    const response = await $fetch('/api/list')
     return response
   },
 })
@@ -48,6 +52,57 @@ watch(
   { immediate: true }
 )
 
+// Debounced search
+let searchTimeout: ReturnType<typeof setTimeout> | null = null
+
+const performSearch = async () => {
+  if (!searchQuery.value.trim() || searchQuery.value.length < 2) {
+    searchResults.value = []
+    return
+  }
+
+  isSearching.value = true
+  try {
+    const results = await $fetch('/api/content/search', {
+      params: { q: searchQuery.value },
+    })
+    searchResults.value = results
+    if (results.length === 0) {
+      toast.error('No movies found. Try a different search! 🔍')
+    }
+
+    // Maintain focus on search input after results load
+    nextTick(() => {
+      searchInputRef.value?.focus()
+    })
+  } catch (error) {
+    toast.error('Failed to search for movies 💫')
+    console.error(error)
+  } finally {
+    isSearching.value = false
+  }
+}
+
+const searchMovies = () => {
+  if (searchTimeout) {
+    clearTimeout(searchTimeout)
+  }
+
+  if (!searchQuery.value.trim() || searchQuery.value.length < 2) {
+    searchResults.value = []
+    return
+  }
+
+  searchTimeout = setTimeout(() => {
+    performSearch()
+  }, 500) // 500ms debounce
+}
+
+// Watch search query for auto-search
+watch(searchQuery, () => {
+  searchMovies()
+})
+
 const statusOptions = [
   { value: 'WANT_TO_WATCH', label: 'Plan to Watch 🎬' },
   { value: 'WATCHING', label: 'Currently Watching 📺' },
@@ -56,21 +111,21 @@ const statusOptions = [
   { value: 'DROPPED', label: 'Dropped 💫' },
 ] as const
 
-const addContentMutation = useMutation({
+const addToListMutation = useMutation({
   mutationFn: async (data: {
-    title: string
+    contentId: string
     status: string
     requestedById: string
     position?: number
   }) => {
-    const result = await $fetch('/api/content', {
+    const result = await $fetch('/api/list', {
       method: 'POST',
       body: data,
     })
     return result
   },
   onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ['content'] })
+    queryClient.invalidateQueries({ queryKey: ['list'] })
     toast.success('Woof woof woof woof! ❤️')
     closeModal()
   },
@@ -82,7 +137,12 @@ const addContentMutation = useMutation({
 })
 
 const closeModal = () => {
-  title.value = ''
+  if (searchTimeout) {
+    clearTimeout(searchTimeout)
+  }
+  searchQuery.value = ''
+  selectedContentId.value = null
+  searchResults.value = []
   status.value = 'WANT_TO_WATCH'
   position.value = undefined
   if (usersData.value?.users && usersData.value.users.length > 0) {
@@ -91,9 +151,18 @@ const closeModal = () => {
   emit('close')
 }
 
+const selectMovie = (contentId: string) => {
+  selectedContentId.value = contentId
+}
+
+const selectedMovie = computed(() => {
+  if (!selectedContentId.value) return null
+  return searchResults.value.find(m => m.id === selectedContentId.value)
+})
+
 const handleSubmit = () => {
-  if (!title.value.trim()) {
-    toast.error('Woof woof woof woof woof 💫')
+  if (!selectedContentId.value) {
+    toast.error('Please select a movie 💫')
     return
   }
 
@@ -102,8 +171,8 @@ const handleSubmit = () => {
     return
   }
 
-  addContentMutation.mutate({
-    title: title.value.trim(),
+  addToListMutation.mutate({
+    contentId: selectedContentId.value,
     status: status.value,
     requestedById: requestedById.value,
     position: position.value,
@@ -166,23 +235,71 @@ onUnmounted(() => {
 
           <!-- Form -->
           <form class="space-y-4 sm:space-y-6" @submit.prevent="handleSubmit">
-            <!-- Title Input -->
+            <!-- Search Input -->
             <div>
               <label
-                for="title"
+                for="search"
                 class="block text-sm font-medium text-gray-700 mb-1.5 sm:mb-2"
               >
-                Movie Title 🎬
+                Search for a Movie 🎬
               </label>
-              <input
-                id="title"
-                v-model="title"
-                type="text"
-                placeholder="Enter the movie title..."
-                class="input w-full text-sm sm:text-base"
-                :disabled="addContentMutation.isPending.value"
-                autofocus
-              />
+              <div class="flex gap-2">
+                <input
+                  id="search"
+                  ref="searchInputRef"
+                  v-model="searchQuery"
+                  type="text"
+                  placeholder="Start typing to search..."
+                  class="input flex-1 text-sm sm:text-base"
+                  autofocus
+                />
+                <div
+                  v-if="isSearching"
+                  class="flex items-center px-4 text-love-rose text-sm"
+                >
+                  🔍 Searching...
+                </div>
+              </div>
+            </div>
+
+            <!-- Search Results -->
+            <div
+              v-if="searchResults.length > 0"
+              class="space-y-2 max-h-64 overflow-y-auto"
+            >
+              <p class="text-sm font-medium text-gray-700 mb-2">
+                Select a movie:
+              </p>
+              <div
+                v-for="movie in searchResults"
+                :key="movie.id"
+                class="p-3 border-2 rounded-xl cursor-pointer transition-all"
+                :class="
+                  selectedContentId === movie.id
+                    ? 'border-love-rose bg-love-blush/20'
+                    : 'border-gray-200 hover:border-love-blush'
+                "
+                @click="selectMovie(movie.id)"
+              >
+                <h4 class="font-semibold text-gray-800 text-sm">
+                  {{ movie.title }}
+                  <span v-if="movie.year" class="text-gray-500"
+                    >({{ movie.year }})</span
+                  >
+                </h4>
+                <p
+                  v-if="movie.overview"
+                  class="text-xs text-gray-600 mt-1 line-clamp-2"
+                >
+                  {{ movie.overview }}
+                </p>
+                <div
+                  v-if="movie.genres && movie.genres.length > 0"
+                  class="text-xs text-gray-500 mt-1"
+                >
+                  {{ movie.genres.slice(0, 3).join(', ') }}
+                </div>
+              </div>
             </div>
 
             <!-- Requested By Select -->
@@ -197,7 +314,7 @@ onUnmounted(() => {
                 id="requestedBy"
                 v-model="requestedById"
                 class="input w-full text-sm sm:text-base"
-                :disabled="addContentMutation.isPending.value || isLoadingUsers"
+                :disabled="addToListMutation.isPending.value || isLoadingUsers"
               >
                 <option
                   v-for="user in usersData?.users"
@@ -221,11 +338,11 @@ onUnmounted(() => {
                 id="position"
                 v-model.number="position"
                 class="input w-full text-sm sm:text-base"
-                :disabled="addContentMutation.isPending.value"
+                :disabled="addToListMutation.isPending.value"
               >
                 <option :value="undefined">At the end (default)</option>
                 <option
-                  v-for="i in (contentData?.length || 0) + 1"
+                  v-for="i in (listData?.length || 0) + 1"
                   :key="i"
                   :value="i"
                 >
@@ -246,7 +363,7 @@ onUnmounted(() => {
                 id="status"
                 v-model="status"
                 class="input w-full text-sm sm:text-base"
-                :disabled="addContentMutation.isPending.value"
+                :disabled="addToListMutation.isPending.value"
               >
                 <option
                   v-for="option in statusOptions"
@@ -263,7 +380,7 @@ onUnmounted(() => {
               <button
                 type="button"
                 class="btn-secondary flex-1 py-2.5 sm:py-2 text-sm sm:text-base order-2 sm:order-1"
-                :disabled="addContentMutation.isPending.value"
+                :disabled="addToListMutation.isPending.value"
                 @click="closeModal"
               >
                 Woof Woof 💫
@@ -272,13 +389,13 @@ onUnmounted(() => {
                 type="submit"
                 class="btn-primary flex-1 py-2.5 sm:py-2 text-sm sm:text-base order-1 sm:order-2"
                 :disabled="
-                  addContentMutation.isPending.value ||
-                  !title.trim() ||
+                  addToListMutation.isPending.value ||
+                  !selectedContentId ||
                   !requestedById
                 "
               >
                 <span
-                  v-if="addContentMutation.isPending.value"
+                  v-if="addToListMutation.isPending.value"
                   class="text-sm sm:text-base"
                 >
                   Woof woof woof... ✨
