@@ -66,9 +66,10 @@ export default defineNuxtConfig({
   // Runtime config for environment variables
   runtimeConfig: {
     // Private keys (server-side only)
-    jwtSecret: process.env.JWT_SECRET,
-    databaseUrl: process.env.DATABASE_URL,
-    tmdbApiKey: process.env.TMDB_API_KEY,
+    // Nuxt will automatically read from JWT_SECRET, DATABASE_URL, TMDB_API_KEY env vars at runtime
+    jwtSecret: '',
+    databaseUrl: '',
+    tmdbApiKey: '',
     // Public keys (exposed to client)
     public: {
       appUrl: process.env.PUBLIC_APP_URL || '',
