@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/composables/useToast'
 
@@ -68,7 +68,7 @@ const performSearch = async () => {
     })
     searchResults.value = results
     if (results.length === 0) {
-      toast.error('No movies found. Try a different search! 🔍')
+      toast.error('Nothing found. Try a different search! 🔍')
     }
 
     // Maintain focus on search input after results load
@@ -76,7 +76,7 @@ const performSearch = async () => {
       searchInputRef.value?.focus()
     })
   } catch (error) {
-    toast.error('Failed to search for movies 💫')
+    toast.error('Failed to search 💫')
     console.error(error)
   } finally {
     isSearching.value = false
@@ -151,18 +151,13 @@ const closeModal = () => {
   emit('close')
 }
 
-const selectMovie = (contentId: string) => {
+const selectContent = (contentId: string) => {
   selectedContentId.value = contentId
 }
 
-const selectedMovie = computed(() => {
-  if (!selectedContentId.value) return null
-  return searchResults.value.find(m => m.id === selectedContentId.value)
-})
-
 const handleSubmit = () => {
   if (!selectedContentId.value) {
-    toast.error('Please select a movie 💫')
+    toast.error('Please select something to watch 💫')
     return
   }
 
@@ -241,7 +236,7 @@ onUnmounted(() => {
                 for="search"
                 class="block text-sm font-medium text-gray-700 mb-1.5 sm:mb-2"
               >
-                Search for a Movie 🎬
+                Search for Movies & Series 🎬📺
               </label>
               <div class="flex gap-2">
                 <input
@@ -265,39 +260,65 @@ onUnmounted(() => {
             <!-- Search Results -->
             <div
               v-if="searchResults.length > 0"
-              class="space-y-2 max-h-64 overflow-y-auto"
+              class="space-y-2 max-h-96 overflow-y-auto"
             >
               <p class="text-sm font-medium text-gray-700 mb-2">
-                Select a movie:
+                Select something to watch:
               </p>
               <div
-                v-for="movie in searchResults"
-                :key="movie.id"
-                class="p-3 border-2 rounded-xl cursor-pointer transition-all"
+                v-for="content in searchResults"
+                :key="content.id"
+                class="flex gap-3 p-3 border-2 rounded-xl cursor-pointer transition-all"
                 :class="
-                  selectedContentId === movie.id
+                  selectedContentId === content.id
                     ? 'border-love-rose bg-love-blush/20'
                     : 'border-gray-200 hover:border-love-blush'
                 "
-                @click="selectMovie(movie.id)"
+                @click="selectContent(content.id)"
               >
-                <h4 class="font-semibold text-gray-800 text-sm">
-                  {{ movie.title }}
-                  <span v-if="movie.year" class="text-gray-500"
-                    >({{ movie.year }})</span
+                <!-- Poster Image -->
+                <div class="flex-shrink-0 w-16 h-24 sm:w-20 sm:h-28">
+                  <img
+                    v-if="content.posterPath"
+                    :src="`https://image.tmdb.org/t/p/w185${content.posterPath}`"
+                    :alt="content.title"
+                    class="w-full h-full object-cover rounded-lg shadow-sm"
+                  />
+                  <div
+                    v-else
+                    class="w-full h-full bg-gradient-to-br from-love-blush to-love-lavender rounded-lg flex items-center justify-center text-2xl"
                   >
-                </h4>
-                <p
-                  v-if="movie.overview"
-                  class="text-xs text-gray-600 mt-1 line-clamp-2"
-                >
-                  {{ movie.overview }}
-                </p>
-                <div
-                  v-if="movie.genres && movie.genres.length > 0"
-                  class="text-xs text-gray-500 mt-1"
-                >
-                  {{ movie.genres.slice(0, 3).join(', ') }}
+                    {{ content.type === 'SERIES' ? '📺' : '🎬' }}
+                  </div>
+                </div>
+
+                <!-- Content Info -->
+                <div class="flex-1 min-w-0">
+                  <h4 class="font-semibold text-gray-800 text-sm">
+                    {{ content.title }}
+                    <span
+                      v-if="content.type === 'SERIES'"
+                      class="text-love-lavender"
+                    >
+                      📺
+                    </span>
+                    <span v-else class="text-love-coral">🎬</span>
+                    <span v-if="content.year" class="text-gray-500">
+                      ({{ content.year }})
+                    </span>
+                  </h4>
+                  <p
+                    v-if="content.overview"
+                    class="text-xs text-gray-600 mt-1 line-clamp-2"
+                  >
+                    {{ content.overview }}
+                  </p>
+                  <div
+                    v-if="content.genres && content.genres.length > 0"
+                    class="text-xs text-gray-500 mt-1"
+                  >
+                    {{ content.genres.slice(0, 3).join(', ') }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -390,8 +411,8 @@ onUnmounted(() => {
                 class="btn-primary flex-1 py-2.5 sm:py-2 text-sm sm:text-base order-1 sm:order-2"
                 :disabled="
                   addToListMutation.isPending.value ||
-                  !selectedContentId ||
-                  !requestedById
+                    !selectedContentId ||
+                    !requestedById
                 "
               >
                 <span

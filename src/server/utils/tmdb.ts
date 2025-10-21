@@ -19,9 +19,28 @@ export interface TMDBMovie {
   original_language: string
 }
 
+export interface TMDBTVShow {
+  id: number
+  name: string
+  original_name: string
+  overview: string
+  poster_path: string | null
+  backdrop_path: string | null
+  first_air_date: string
+  genre_ids: number[]
+  original_language: string
+}
+
 export interface TMDBSearchResponse {
   page: number
   results: TMDBMovie[]
+  total_pages: number
+  total_results: number
+}
+
+export interface TMDBMultiSearchResponse {
+  page: number
+  results: Array<(TMDBMovie | TMDBTVShow) & { media_type: 'movie' | 'tv' }>
   total_pages: number
   total_results: number
 }
@@ -31,6 +50,16 @@ export interface TMDBMovieDetails extends TMDBMovie {
   imdb_id: string | null
   runtime: number | null
   tagline: string | null
+}
+
+export interface TMDBTVShowDetails extends TMDBTVShow {
+  genres: Array<{ id: number; name: string }>
+  tagline: string | null
+  episode_run_time: number[]
+  number_of_seasons: number
+  number_of_episodes: number
+  status: string
+  last_air_date: string | null
 }
 
 export interface TMDBGenre {
@@ -46,7 +75,7 @@ export interface MappedContentData {
   externalId: string
   title: string
   originalTitle: string
-  type: 'MOVIE'
+  type: 'MOVIE' | 'SERIES'
   overview: string | null
   tagline: string | null
   genres: string[]
@@ -57,6 +86,11 @@ export interface MappedContentData {
   posterPath: string | null
   backdropPath: string | null
   imdbId: string | null
+  // Series-specific fields
+  seasonCount?: number
+  episodeCount?: number
+  seriesStatus?: string
+  lastAirDate?: Date | null
 }
 
 /**
@@ -114,6 +148,28 @@ export async function searchMovies(query: string, page = 1) {
 }
 
 /**
+ * Search for TV shows
+ */
+export async function searchTVShows(query: string, page = 1) {
+  return request<TMDBSearchResponse>('/search/tv', {
+    query,
+    page,
+    include_adult: false,
+  })
+}
+
+/**
+ * Search for both movies and TV shows
+ */
+export async function searchMulti(query: string, page = 1) {
+  return request<TMDBMultiSearchResponse>('/search/multi', {
+    query,
+    page,
+    include_adult: false,
+  })
+}
+
+/**
  * Get movie details by ID
  */
 export async function getMovieDetails(movieId: number) {
@@ -121,10 +177,43 @@ export async function getMovieDetails(movieId: number) {
 }
 
 /**
+ * Get TV show details by ID
+ */
+export async function getTVShowDetails(tvId: number) {
+  return request<TMDBTVShowDetails>(`/tv/${tvId}`)
+}
+
+/**
  * Get movie genres
  */
-export async function getGenres() {
+export async function getMovieGenres() {
   return request<TMDBGenresResponse>('/genre/movie/list')
+}
+
+/**
+ * Get TV show genres
+ */
+export async function getTVGenres() {
+  return request<TMDBGenresResponse>('/genre/tv/list')
+}
+
+/**
+ * Get all genres (movies and TV shows combined)
+ */
+export async function getGenres() {
+  const [movieGenres, tvGenres] = await Promise.all([
+    getMovieGenres(),
+    getTVGenres(),
+  ])
+
+  // Combine and deduplicate genres
+  const genreMap = new Map<number, string>()
+  movieGenres.genres.forEach(g => genreMap.set(g.id, g.name))
+  tvGenres.genres.forEach(g => genreMap.set(g.id, g.name))
+
+  return {
+    genres: Array.from(genreMap.entries()).map(([id, name]) => ({ id, name })),
+  }
 }
 
 /**
@@ -218,6 +307,42 @@ export async function mapMovieToContent(
 }
 
 /**
+ * Map TMDB TV show details to content data for database storage
+ */
+export async function mapTVShowToContent(
+  tvShow: TMDBTVShowDetails
+): Promise<MappedContentData> {
+  const avgRuntime =
+    tvShow.episode_run_time.length > 0
+      ? Math.round(
+          tvShow.episode_run_time.reduce((a, b) => a + b, 0) /
+            tvShow.episode_run_time.length
+        )
+      : null
+
+  return {
+    externalId: String(tvShow.id),
+    title: tvShow.name,
+    originalTitle: tvShow.original_name,
+    type: 'SERIES' as const,
+    overview: tvShow.overview || null,
+    tagline: tvShow.tagline || null,
+    genres: tvShow.genres.map(g => g.name),
+    originalLanguage: tvShow.original_language,
+    releaseDate: tvShow.first_air_date,
+    year: extractYear(tvShow.first_air_date),
+    runtime: avgRuntime,
+    posterPath: tvShow.poster_path,
+    backdropPath: tvShow.backdrop_path,
+    imdbId: null, // TMDB TV shows don't have IMDb IDs in the API
+    seasonCount: tvShow.number_of_seasons,
+    episodeCount: tvShow.number_of_episodes,
+    seriesStatus: tvShow.status,
+    lastAirDate: tvShow.last_air_date ? new Date(tvShow.last_air_date) : null,
+  }
+}
+
+/**
  * Map TMDB search result to content data for database storage
  * Note: Requires genre lookup since search results only have genre_ids
  */
@@ -241,5 +366,31 @@ export async function mapSearchResultToContent(
     posterPath: movie.poster_path,
     backdropPath: movie.backdrop_path,
     imdbId: null, // Not available in search results
+  }
+}
+
+/**
+ * Map TMDB TV show search result to content data
+ */
+export async function mapTVSearchResultToContent(
+  tvShow: TMDBTVShow
+): Promise<MappedContentData> {
+  const genres = await mapGenreIds(tvShow.genre_ids)
+
+  return {
+    externalId: String(tvShow.id),
+    title: tvShow.name,
+    originalTitle: tvShow.original_name,
+    type: 'SERIES' as const,
+    overview: tvShow.overview || null,
+    tagline: null,
+    genres,
+    originalLanguage: tvShow.original_language,
+    releaseDate: tvShow.first_air_date,
+    year: extractYear(tvShow.first_air_date),
+    runtime: null,
+    posterPath: tvShow.poster_path,
+    backdropPath: tvShow.backdrop_path,
+    imdbId: null,
   }
 }

@@ -8,9 +8,13 @@
 
 import { prisma } from '~/server/utils/prisma'
 import {
-  searchMovies,
+  searchMulti,
   getMovieDetails,
+  getTVShowDetails,
   mapMovieToContent,
+  mapTVShowToContent,
+  type TMDBMovie,
+  type TMDBTVShow,
 } from '~/server/utils/tmdb'
 
 export default defineProtectedEventHandler(async event => {
@@ -60,9 +64,9 @@ export default defineProtectedEventHandler(async event => {
     return localResults
   }
 
-  // Step 2: No local results, search TMDB
+  // Step 2: No local results, search TMDB (both movies and TV shows)
   try {
-    const tmdbResults = await searchMovies(searchQuery, 1)
+    const tmdbResults = await searchMulti(searchQuery, 1)
 
     if (tmdbResults.results.length === 0) {
       return []
@@ -71,12 +75,21 @@ export default defineProtectedEventHandler(async event => {
     // Step 3: Cache TMDB results in database
     const cachedResults = await Promise.all(
       tmdbResults.results
+        .filter(item => item.media_type === 'movie' || item.media_type === 'tv')
         .slice(0, Math.max(0, 10 - localResults.length))
-        .map(async movie => {
+        .map(async item => {
           try {
-            // Get full movie details for better data
-            const movieDetails = await getMovieDetails(movie.id)
-            const mappedData = await mapMovieToContent(movieDetails)
+            let mappedData
+
+            if (item.media_type === 'movie') {
+              const movie = item as TMDBMovie & { media_type: 'movie' }
+              const movieDetails = await getMovieDetails(movie.id)
+              mappedData = await mapMovieToContent(movieDetails)
+            } else {
+              const tvShow = item as TMDBTVShow & { media_type: 'tv' }
+              const tvDetails = await getTVShowDetails(tvShow.id)
+              mappedData = await mapTVShowToContent(tvDetails)
+            }
 
             // Upsert into database (create or update)
             const content = await prisma.content.upsert({
@@ -119,10 +132,36 @@ export default defineProtectedEventHandler(async event => {
               },
             })
 
+            // If it's a series, also save the series details
+            if (mappedData.type === 'SERIES' && mappedData.seasonCount) {
+              await prisma.seriesDetails.upsert({
+                where: { contentId: content.id },
+                update: {
+                  seasonCount: mappedData.seasonCount,
+                  episodeCount: mappedData.episodeCount || null,
+                  status: mappedData.seriesStatus || null,
+                  lastAirDate: mappedData.lastAirDate || null,
+                },
+                create: {
+                  contentId: content.id,
+                  seasonCount: mappedData.seasonCount,
+                  episodeCount: mappedData.episodeCount || null,
+                  status: mappedData.seriesStatus || null,
+                  lastAirDate: mappedData.lastAirDate || null,
+                },
+              })
+            }
+
             return content
           } catch (error) {
+            const title =
+              'title' in item
+                ? item.title
+                : 'name' in item
+                  ? item.name
+                  : 'Unknown'
             console.error(
-              `Failed to cache movie ${movie.id} (${movie.title}):`,
+              `Failed to cache ${item.media_type} ${item.id} (${title}):`,
               error
             )
             return null
