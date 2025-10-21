@@ -56,7 +56,7 @@ export default defineProtectedEventHandler(async event => {
   })
 
   // If we have local results, return them
-  if (localResults.length > 10) {
+  if (localResults.length >= 10) {
     return localResults
   }
 
@@ -70,62 +70,64 @@ export default defineProtectedEventHandler(async event => {
 
     // Step 3: Cache TMDB results in database
     const cachedResults = await Promise.all(
-      tmdbResults.results.slice(0, 10).map(async movie => {
-        try {
-          // Get full movie details for better data
-          const movieDetails = await getMovieDetails(movie.id)
-          const mappedData = await mapMovieToContent(movieDetails)
+      tmdbResults.results
+        .slice(0, Math.max(0, 10 - localResults.length))
+        .map(async movie => {
+          try {
+            // Get full movie details for better data
+            const movieDetails = await getMovieDetails(movie.id)
+            const mappedData = await mapMovieToContent(movieDetails)
 
-          // Upsert into database (create or update)
-          const content = await prisma.content.upsert({
-            where: {
-              externalSource_externalId: {
-                externalSource: 'TMDB',
-                externalId: mappedData.externalId,
+            // Upsert into database (create or update)
+            const content = await prisma.content.upsert({
+              where: {
+                externalSource_externalId: {
+                  externalSource: 'TMDB',
+                  externalId: mappedData.externalId,
+                },
               },
-            },
-            update: {
-              title: mappedData.title,
-              originalTitle: mappedData.originalTitle,
-              overview: mappedData.overview,
-              tagline: mappedData.tagline,
-              genres: mappedData.genres,
-              originalLanguage: mappedData.originalLanguage,
-              releaseDate: mappedData.releaseDate,
-              year: mappedData.year,
-              runtime: mappedData.runtime,
-              posterPath: mappedData.posterPath,
-              backdropPath: mappedData.backdropPath,
-              imdbId: mappedData.imdbId,
-            },
-            create: {
-              externalId: mappedData.externalId,
-              externalSource: 'TMDB',
-              title: mappedData.title,
-              originalTitle: mappedData.originalTitle,
-              type: mappedData.type,
-              overview: mappedData.overview,
-              tagline: mappedData.tagline,
-              genres: mappedData.genres,
-              originalLanguage: mappedData.originalLanguage,
-              releaseDate: mappedData.releaseDate,
-              year: mappedData.year,
-              runtime: mappedData.runtime,
-              posterPath: mappedData.posterPath,
-              backdropPath: mappedData.backdropPath,
-              imdbId: mappedData.imdbId,
-            },
-          })
+              update: {
+                title: mappedData.title,
+                originalTitle: mappedData.originalTitle,
+                overview: mappedData.overview,
+                tagline: mappedData.tagline,
+                genres: mappedData.genres,
+                originalLanguage: mappedData.originalLanguage,
+                releaseDate: mappedData.releaseDate,
+                year: mappedData.year,
+                runtime: mappedData.runtime,
+                posterPath: mappedData.posterPath,
+                backdropPath: mappedData.backdropPath,
+                imdbId: mappedData.imdbId,
+              },
+              create: {
+                externalId: mappedData.externalId,
+                externalSource: 'TMDB',
+                title: mappedData.title,
+                originalTitle: mappedData.originalTitle,
+                type: mappedData.type,
+                overview: mappedData.overview,
+                tagline: mappedData.tagline,
+                genres: mappedData.genres,
+                originalLanguage: mappedData.originalLanguage,
+                releaseDate: mappedData.releaseDate,
+                year: mappedData.year,
+                runtime: mappedData.runtime,
+                posterPath: mappedData.posterPath,
+                backdropPath: mappedData.backdropPath,
+                imdbId: mappedData.imdbId,
+              },
+            })
 
-          return content
-        } catch (error) {
-          console.error(
-            `Failed to cache movie ${movie.id} (${movie.title}):`,
-            error
-          )
-          return null
-        }
-      })
+            return content
+          } catch (error) {
+            console.error(
+              `Failed to cache movie ${movie.id} (${movie.title}):`,
+              error
+            )
+            return null
+          }
+        })
     )
 
     // Filter out any failed caching attempts
