@@ -16,6 +16,8 @@
     "format": "prettier --write .",
     "db:migrate": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
+    "db:create-user": "tsx scripts/create-user.ts",
+    "db:change-password": "tsx scripts/change-password.ts",
     "railway:deploy": "prisma migrate deploy && node .output/server/index.mjs"
   },
   "prisma": {

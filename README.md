@@ -369,17 +369,36 @@ pnpm build
 
 ## 🚢 Production Deployment
 
-### Manual Deployment
+### 🚂 Deploy to Railway (Recommended - 5 Minutes)
+
+**Railway is the easiest way to deploy this app!** It automatically handles Docker, databases, and deployments.
+
+**Quick Start:**
+
+1. Push your code to GitHub
+2. Go to [railway.app](https://railway.app) and create a new project
+3. Connect your GitHub repository
+4. Add PostgreSQL database (one click)
+5. Set environment variables: `JWT_SECRET` and `NODE_ENV=production`
+6. Configure start command: `sh -c "pnpm prisma migrate deploy && node .output/server/index.mjs"`
+7. That's it! Railway gives you a live URL 🎉
+
+**📖 Detailed Guide:** See [DEPLOYMENT.md](./DEPLOYMENT.md) for step-by-step instructions  
+**⚡ Quick Reference:** See [RAILWAY_QUICK_START.md](./RAILWAY_QUICK_START.md)
+
+### Other Deployment Options
+
+#### Docker Compose (Self-Hosted)
 
 1. **Build production Docker image**
 
    ```bash
-   docker build -t app:latest .
+   docker build -t movie-list:latest .
    ```
 
 2. **Set environment variables**
    - Create `.env` file with production values
-   - Use strong `JWT_SECRET`
+   - Use strong `JWT_SECRET` (generate with `openssl rand -base64 32`)
    - Update database credentials
 
 3. **Deploy with Docker Compose**
@@ -393,22 +412,14 @@ pnpm build
    docker-compose exec web pnpm prisma migrate deploy
    ```
 
-### Using a Cloud Provider
+#### Other Platforms
 
-**Prerequisites:**
+The app works with any Docker-friendly platform:
 
-- Cloud account (AWS, DigitalOcean, etc.)
-- Domain name (optional)
-
-**Steps:**
-
-1. Provision a VM or container service
-2. Install Docker and Docker Compose
-3. Clone repository
-4. Set up environment variables
-5. Run Docker Compose
-6. Configure reverse proxy (Nginx/Caddy)
-7. Set up SSL with Let's Encrypt
+- **Fly.io** - Docker-native, global deployment
+- **Render** - Simple UI with free tier
+- **DigitalOcean App Platform** - Reliable with managed database
+- **AWS/GCP/Azure** - Enterprise options with more configuration
 
 ## 📚 Resources
 
