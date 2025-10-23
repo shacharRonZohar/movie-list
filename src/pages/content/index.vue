@@ -2,7 +2,41 @@
 import { ref, computed } from 'vue'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
 import { useToast } from '~/composables/useToast'
+import { useConfirm } from '~/composables/useConfirm'
 import { VueDraggable } from 'vue-draggable-plus'
+
+interface ContentData {
+  id: string
+  title: string
+  originalTitle: string | null
+  type: string
+  overview: string | null
+  tagline: string | null
+  genres: string[]
+  year: number
+  runtime: number | null
+  posterPath: string | null
+  backdropPath: string | null
+  releaseDate: string | null
+  imdbId: string | null
+}
+
+interface UserData {
+  id: string
+  username: string
+  displayName: string
+}
+
+interface ListItemData {
+  id: string
+  status: string
+  rating: number | null
+  addedAt: Date
+  position: number
+  content: ContentData
+  addedBy: UserData
+  requestedBy: UserData
+}
 
 defineOptions({
   name: 'ContentPage',
@@ -14,7 +48,10 @@ definePageMeta({
 })
 
 const showAddModal = ref(false)
+const showDetailsModal = ref(false)
+const selectedListItem = ref<ListItemData | null>(null)
 const toast = useToast()
+const { confirm } = useConfirm()
 const queryClient = useQueryClient()
 const isDragging = ref(false)
 const draggedItemId = ref<string | null>(null)
@@ -101,6 +138,49 @@ const updatePositionMutation = useMutation({
     queryClient.invalidateQueries({ queryKey: ['list'] })
   },
 })
+
+const openDetailsModal = (item: ListItemData) => {
+  selectedListItem.value = item
+  showDetailsModal.value = true
+}
+
+const closeDetailsModal = () => {
+  showDetailsModal.value = false
+  selectedListItem.value = null
+}
+
+const deleteMutation = useMutation({
+  mutationFn: async (id: string) => {
+    await $fetch(`/api/list/${id}`, {
+      method: 'DELETE',
+    })
+  },
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['list'] })
+    toast.success('Removed with love 💫')
+  },
+  onError: error => {
+    toast.error(
+      `Oops! ${error instanceof Error ? error.message : "Couldn't remove it 💔"}`
+    )
+  },
+})
+
+const handleDelete = async (item: ListItemData, event: Event) => {
+  event.stopPropagation() // Prevent opening the details modal
+
+  const confirmed = await confirm({
+    title: 'Remove from our collection?',
+    message: `Are you sure you want to remove "${item.content.title}" from our list? This cannot be undone.`,
+    confirmText: 'Yes, remove it',
+    cancelText: 'Keep it',
+    variant: 'danger',
+  })
+
+  if (confirmed) {
+    deleteMutation.mutate(item.id)
+  }
+}
 
 const handleDragStart = (evt: { oldIndex?: number }) => {
   isDragging.value = true
@@ -266,6 +346,7 @@ const handleDragEnd = (evt: { newIndex?: number; oldIndex?: number }) => {
             v-for="item in listItems"
             :key="item.id"
             class="card-hover p-4 sm:p-6 group transition-all cursor-grab active:cursor-grabbing"
+            @click="openDetailsModal(item)"
           >
             <div class="flex gap-4 sm:gap-6">
               <!-- Poster Image -->
@@ -320,7 +401,7 @@ const handleDragEnd = (evt: { newIndex?: number; oldIndex?: number }) => {
                   </div>
                 </div>
 
-                <!-- Status Selector -->
+                <!-- Status Selector and Actions -->
                 <div class="flex items-center gap-2">
                   <label
                     :for="`status-${item.id}`"
@@ -343,6 +424,7 @@ const handleDragEnd = (evt: { newIndex?: number; oldIndex?: number }) => {
                         ($event.target as HTMLSelectElement).value
                       )
                     "
+                    @click.stop
                   >
                     <option
                       v-for="option in statusOptions"
@@ -352,6 +434,14 @@ const handleDragEnd = (evt: { newIndex?: number; oldIndex?: number }) => {
                       {{ option.label }}
                     </option>
                   </select>
+                  <button
+                    class="ml-auto text-gray-400 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-50"
+                    title="Remove from list"
+                    :disabled="deleteMutation.isPending.value"
+                    @click="handleDelete(item, $event)"
+                  >
+                    <span class="text-xl">🗑️</span>
+                  </button>
                 </div>
 
                 <!-- Requested By -->
@@ -367,6 +457,13 @@ const handleDragEnd = (evt: { newIndex?: number; oldIndex?: number }) => {
 
     <!-- Add Content Modal -->
     <AddContentModal :open="showAddModal" @close="showAddModal = false" />
+
+    <!-- Content Details Modal -->
+    <ContentDetailsModal
+      :open="showDetailsModal"
+      :list-item="selectedListItem"
+      @close="closeDetailsModal"
+    />
   </div>
 </template>
 
