@@ -1,9 +1,11 @@
 /**
  * Search for content (movies/series)
- * First searches local database, then TMDB if no results found
+ * Uses fuzzy matching on local database first, then TMDB if needed
  * Caches TMDB results in database for future searches
  *
  * GET /api/content/search?q=inception
+ * GET /api/content/search?q=horror+2023
+ * GET /api/content/search?q=dark+knight&type=MOVIE
  */
 
 import { prisma } from '~/server/utils/prisma'
@@ -16,10 +18,16 @@ import {
   type TMDBMovie,
   type TMDBTVShow,
 } from '~/server/utils/tmdb'
+import {
+  searchLocalContent,
+  hasHighConfidenceMatch,
+  parseSearchQuery,
+} from '~/server/utils/fuzzySearch'
 
 export default defineProtectedEventHandler(async event => {
   const query = getQuery(event)
   const searchQuery = query.q as string
+  const contentType = query.type as 'MOVIE' | 'SERIES' | undefined
 
   if (!searchQuery) {
     throw createError({
@@ -35,45 +43,38 @@ export default defineProtectedEventHandler(async event => {
     })
   }
 
-  // Step 1: Search local database first
-  const localResults = await prisma.content.findMany({
-    where: {
-      OR: [
-        {
-          title: {
-            contains: searchQuery,
-            mode: 'insensitive',
-          },
-        },
-        {
-          originalTitle: {
-            contains: searchQuery,
-            mode: 'insensitive',
-          },
-        },
-      ],
-    },
-    take: 10,
-    orderBy: {
-      createdAt: 'desc',
-    },
+  // Step 1: Parse query for filters (year, genres)
+  const { query: parsedQuery, year, genres } = parseSearchQuery(searchQuery)
+
+  // Step 2: Search local database with fuzzy matching
+  const localResults = await searchLocalContent({
+    query: parsedQuery,
+    type: contentType,
+    year,
+    genres,
+    limit: 10,
+    minSimilarity: 0.3,
   })
 
-  // If we have local results, return them
-  if (localResults.length >= 10) {
+  // Step 3: Check if we have high-confidence matches
+  const hasGoodMatch = await hasHighConfidenceMatch(parsedQuery, 0.7)
+
+  // If we have 10+ results or a high-confidence match, return local results
+  if (localResults.length >= 10 || hasGoodMatch) {
     return localResults
   }
 
-  // Step 2: No local results, search TMDB (both movies and TV shows)
+  // Step 4: Search TMDB for additional results
   try {
-    const tmdbResults = await searchMulti(searchQuery, 1)
+    const tmdbResults = await searchMulti(parsedQuery, 1)
 
     if (tmdbResults.results.length === 0) {
-      return []
+      // No TMDB results, return what we have from local
+      return localResults
     }
 
-    // Step 3: Cache TMDB results in database
-    const cachedResults = await Promise.all(
+    // Step 5: Cache TMDB results in database (wait for caching to complete)
+    await Promise.all(
       tmdbResults.results
         .filter(item => item.media_type === 'movie' || item.media_type === 'tv')
         .slice(0, Math.max(0, 10 - localResults.length))
@@ -169,22 +170,25 @@ export default defineProtectedEventHandler(async event => {
         })
     )
 
-    // Filter out any failed caching attempts
-    const validResults = cachedResults.filter(
-      (result): result is NonNullable<typeof result> => result !== null
-    )
+    // Step 6: Re-search locally to get similarity scores for all results (including newly cached)
+    // This ensures local and TMDB results are sorted together by true relevance
+    // No duplicates possible because:
+    // 1. Database enforces unique constraint on (externalSource, externalId)
+    // 2. Upsert updates existing records instead of creating duplicates
+    // 3. Single SQL query with DISTINCT ON (id) ensures unique results
+    const allResults = await searchLocalContent({
+      query: parsedQuery,
+      type: contentType,
+      year,
+      genres,
+      limit: 10,
+      minSimilarity: 0.1, // Lower threshold to include all cached results
+    })
 
-    // Merge results with no duplicates
-    const mergedResults = [...localResults, ...validResults].filter(
-      (result, index, self) => index === self.findIndex(t => t.id === result.id)
-    )
-
-    return mergedResults
+    return allResults
   } catch (error) {
     console.error('TMDB search error:', error)
-    throw createError({
-      statusCode: 500,
-      message: 'Failed to search for content',
-    })
+    // If TMDB fails, still return local results
+    return localResults
   }
 })

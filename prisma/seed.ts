@@ -1,6 +1,12 @@
 import type { Status } from '@prisma/client'
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
+import {
+  getMovieDetails,
+  getTVShowDetails,
+  mapMovieToContent,
+  mapTVShowToContent,
+} from '../src/server/utils/tmdb'
 
 const prisma = new PrismaClient()
 
@@ -198,7 +204,24 @@ async function main() {
 
   // Create each content item and list item
   for (const item of contentData) {
-    // Create or get the content (cached metadata)
+    console.log(`Fetching TMDB metadata for: ${item.title}`)
+
+    // Fetch full metadata from TMDB
+    let mappedData
+    try {
+      if (item.type === 'MOVIE') {
+        const movieDetails = await getMovieDetails(parseInt(item.externalId))
+        mappedData = await mapMovieToContent(movieDetails)
+      } else {
+        const tvDetails = await getTVShowDetails(parseInt(item.externalId))
+        mappedData = await mapTVShowToContent(tvDetails)
+      }
+    } catch (error) {
+      console.error(`Failed to fetch TMDB data for ${item.title}:`, error)
+      continue
+    }
+
+    // Create or get the content with full metadata including posters
     const content = await prisma.content.upsert({
       where: {
         externalSource_externalId: {
@@ -207,28 +230,55 @@ async function main() {
         },
       },
       create: {
-        externalId: item.externalId,
+        externalId: mappedData.externalId,
         externalSource: 'TMDB',
-        title: item.title,
-        type: item.type,
-        genres: item.genres,
-        year: item.year,
-        runtime: item.runtime,
+        title: mappedData.title,
+        originalTitle: mappedData.originalTitle,
+        type: mappedData.type,
+        overview: mappedData.overview,
+        tagline: mappedData.tagline,
+        genres: mappedData.genres,
+        originalLanguage: mappedData.originalLanguage,
+        releaseDate: mappedData.releaseDate,
+        year: mappedData.year,
+        runtime: mappedData.runtime,
+        posterPath: mappedData.posterPath,
+        backdropPath: mappedData.backdropPath,
+        imdbId: mappedData.imdbId,
       },
-      update: {},
+      update: {
+        title: mappedData.title,
+        originalTitle: mappedData.originalTitle,
+        overview: mappedData.overview,
+        tagline: mappedData.tagline,
+        genres: mappedData.genres,
+        originalLanguage: mappedData.originalLanguage,
+        releaseDate: mappedData.releaseDate,
+        year: mappedData.year,
+        runtime: mappedData.runtime,
+        posterPath: mappedData.posterPath,
+        backdropPath: mappedData.backdropPath,
+        imdbId: mappedData.imdbId,
+      },
     })
 
-    // Create series details if applicable
-    if (item.type === 'SERIES' && item.seriesDetails) {
+    // Create series details if applicable (use TMDB data)
+    if (item.type === 'SERIES' && mappedData.seasonCount) {
       await prisma.seriesDetails.upsert({
         where: { contentId: content.id },
         create: {
           contentId: content.id,
-          seasonCount: item.seriesDetails.seasonCount,
-          episodeCount: item.seriesDetails.episodeCount,
-          status: item.seriesDetails.status,
+          seasonCount: mappedData.seasonCount,
+          episodeCount: mappedData.episodeCount || null,
+          status: mappedData.seriesStatus || null,
+          lastAirDate: mappedData.lastAirDate || null,
         },
-        update: {},
+        update: {
+          seasonCount: mappedData.seasonCount,
+          episodeCount: mappedData.episodeCount || null,
+          status: mappedData.seriesStatus || null,
+          lastAirDate: mappedData.lastAirDate || null,
+        },
       })
     }
 
